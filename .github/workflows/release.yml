@@ -250,7 +250,7 @@ jobs:
           echo "Release notes written ($(wc -l < release_notes.md) lines)"
 
       - name: Create Release
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@40bb172bd05f266cf9ba4ff965cb61e9ee5f6d01 # v1.9.0
         with:
           tag: v${{ inputs.rel_version }}
           name: VectraCtl v${{ inputs.rel_version }}
