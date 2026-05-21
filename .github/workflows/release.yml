@@ -37,23 +37,31 @@ jobs:
     needs: validate
     strategy:
       matrix:
-        os: ['ubuntu-latest', 'windows-latest', 'macos-latest']
-        os_arch: [x64, arm, arm64]
         include:
           - os: ubuntu-latest
             kind: linux
             title: linux
+            os_arch: x64
+          - os: ubuntu-latest
+            kind: linux
+            title: linux
+            os_arch: arm64
           - os: windows-latest
             kind: win
             title: windows
+            os_arch: x64
+          - os: windows-latest
+            kind: win
+            title: windows
+            os_arch: arm64
           - os: macos-latest
             kind: osx
             title: osx
-        exclude:
-          - os: windows-latest
-            os_arch: arm
+            os_arch: x64
           - os: macos-latest
-            os_arch: arm
+            kind: osx
+            title: osx
+            os_arch: arm64
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -94,6 +102,7 @@ jobs:
           path: |
             ${{ github.workspace }}/dist/*.zip
             ${{ github.workspace }}/dist/*.tar.gz
+          if-no-files-found: error
 
   release:
     runs-on: ubuntu-latest
