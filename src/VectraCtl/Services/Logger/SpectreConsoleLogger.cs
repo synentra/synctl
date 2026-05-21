@@ -11,16 +11,13 @@ public class SpectreConsoleLogger : IVectraCtlLogger
 {
     private readonly IAnsiConsole _console;
     private readonly IJsonSerializer _serializer;
-    private readonly IJsonDeserializer _deserializer;
 
     public SpectreConsoleLogger(
         IAnsiConsole console,
-        IJsonSerializer serializer,
-        IJsonDeserializer deserializer)
+        IJsonSerializer serializer)
     {
         _console = console ?? throw new ArgumentNullException(nameof(console));
         _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
-        _deserializer = deserializer ?? throw new ArgumentNullException(nameof(deserializer));
     }
 
     public void WriteError(string message) => WriteError(new { message });
@@ -34,11 +31,11 @@ public class SpectreConsoleLogger : IVectraCtlLogger
     public void Write(string message) =>
         _console.MarkupLineInterpolated($"{message}");
 
-    public void Write(object? data, OutputType output = OutputType.Json)
+    public void Write(object? data, OutputType outputType = OutputType.Json)
     {
         var json = SerializeIndented(data);
 
-        switch (output)
+        switch (outputType)
         {
             case OutputType.Table:
                 _console.Write(GenerateTable(json));
