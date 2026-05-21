@@ -12,7 +12,7 @@ public class DockerSettings
     public string ImageName { get; set; } = string.Empty;
     public string Tag { get; set; } = string.Empty;
     public string ContainerName { get; set; } = string.Empty;
-    public int Port { get; set; } = 6262;
+    public int Port { get; set; } = 7080;
     public string HostDataPath { get; set; } = string.Empty;
     public string ContainerDataPath { get; set; } = "/app/data";
 }

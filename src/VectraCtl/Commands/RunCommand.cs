@@ -14,7 +14,7 @@ namespace VectraCtl.Commands;
 
 internal static class RunCommand
 {
-    private const int GatewayContainerPort = 6262;
+    private const int GatewayContainerPort = 7080;
     private const string DefaultContainerName = "vectra-gateway";
     private const string DefaultContainerDataPath = "/app/data";
     private const string DefaultImageName = "cortexiumlabs/vectra";

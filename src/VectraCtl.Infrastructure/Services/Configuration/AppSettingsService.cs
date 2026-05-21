@@ -72,7 +72,7 @@ public class AppSettingsService : IAppSettingsService
                 ImageName = "cortexiumlabs/vectra",
                 Tag = string.Empty,
                 ContainerName = "vectra-gateway",
-                Port = 6262,
+                Port = 7080,
                 HostDataPath = defaultHostPath,
                 ContainerDataPath = "/app/data"
             },
