@@ -12,8 +12,6 @@
 
 </div>
 
----
-
 ## Table of Contents
 
 - [Overview](#overview)
@@ -37,8 +35,6 @@
 - [Contributing](#contributing)
 - [License](#license)
 
----
-
 ## Overview
 
 Vectra is an **Intent-Aware Governance Gateway** that sits between autonomous AI agents and the outside world. It enforces governance policies, routes actions through Human-in-the-Loop review when required, and provides a full audit trail.
@@ -52,8 +48,6 @@ AI Agent  ──►  Vectra Gateway  ──►  External Systems
           (manage, audit, approve)
 ```
 
----
-
 ## Prerequisites
 
 | Requirement | Minimum Version |
@@ -62,8 +56,6 @@ AI Agent  ──►  Vectra Gateway  ──►  External Systems
 | [Docker](https://www.docker.com/get-started) *(optional)* | 24.x |
 
 Docker is only required when using the `--docker` deployment mode.
-
----
 
 ## Installation
 
@@ -85,8 +77,6 @@ cd vectractl
 dotnet publish src/VectraCtl/VectraCtl.csproj -c Release -o ./publish
 # Add ./publish to your PATH
 ```
-
----
 
 ## Quick Start
 
@@ -112,8 +102,6 @@ vectractl token --agent-id <GUID> --secret "s3cr3t"
 vectractl hitl list
 vectractl hitl approve --id <REQUEST-ID> --comment "Reviewed and approved"
 ```
-
----
 
 ## Commands
 
@@ -147,8 +135,6 @@ vectractl init --version 1.5.0
 vectractl init --docker --port 7080 --mount ~/vectra-data
 ```
 
----
-
 ### `run`
 
 Starts the Vectra gateway (binary or Docker container).
@@ -171,8 +157,6 @@ vectractl run --docker               # start Docker container (foreground)
 vectractl run --docker --background  # start Docker container (detached)
 ```
 
----
-
 ### `stop`
 
 Stops the running Vectra gateway.
@@ -189,8 +173,6 @@ vectractl stop [OPTIONS]
 vectractl stop
 vectractl stop --docker
 ```
-
----
 
 ### `update`
 
@@ -211,8 +193,6 @@ vectractl update --version 2.0.0   # update to a specific version
 vectractl update --force            # stop gateway automatically, then update
 ```
 
----
-
 ### `uninstall`
 
 Removes the Vectra gateway engine (binary or Docker).
@@ -232,8 +212,6 @@ vectractl uninstall
 vectractl uninstall --docker --remove-data
 vectractl uninstall --force
 ```
-
----
 
 ### `agents`
 
@@ -274,8 +252,6 @@ vectractl agents assign-policy --agent-id <GUID> --policy <policy-name>
 vectractl agents delete --agent-id <GUID>
 ```
 
----
-
 ### `policies`
 
 Browse governance policies defined in the Vectra gateway.
@@ -291,8 +267,6 @@ vectractl policies list [--page <n>] [--page-size <n>] [-o json|table]
 ```bash
 vectractl policies details --name <policy-name> [-o json|table]
 ```
-
----
 
 ### `hitl`
 
@@ -322,8 +296,6 @@ vectractl hitl approve --id <request-id> [--comment "Approved"]
 vectractl hitl deny --id <request-id> [--comment "Rejected: policy violation"]
 ```
 
----
-
 ### `token`
 
 Exchange agent credentials for a short-lived JWT bearer token that can be used to authenticate API calls to the Vectra gateway.
@@ -342,8 +314,6 @@ vectractl token --agent-id <GUID> --secret <secret> [-o json|table]
 vectractl token --agent-id 3fa85f64-5717-4562-b3fc-2c963f66afa6 --secret "s3cr3t"
 ```
 
----
-
 ## Global Options
 
 These options are available on all list-style subcommands:
@@ -353,8 +323,6 @@ These options are available on all list-style subcommands:
 | `--page <n>` | Page number for paginated results | `1` |
 | `--page-size <n>` | Number of results per page | `25` |
 | `-o, --output` | Output format: `json` or `table` | `json` |
-
----
 
 ## Configuration
 
@@ -379,8 +347,6 @@ These options are available on all list-style subcommands:
 
 You can edit this file manually or use `vectractl init` to regenerate it.
 
----
-
 ## Project Structure
 
 ```
@@ -402,8 +368,6 @@ vectractl/
 │       └── Serialization/           # System.Text.Json implementation
 └── README.md
 ```
-
----
 
 ## Building from Source
 
@@ -427,8 +391,6 @@ dotnet test
 
 Supported runtime identifiers: `win-x64`, `linux-x64`, `osx-x64`, `osx-arm64`.
 
----
-
 ## Contributing
 
 Contributions are welcome! Please follow these steps:
@@ -439,8 +401,6 @@ Contributions are welcome! Please follow these steps:
 4. Open a **Pull Request** against `main` with a description of what was changed and why.
 
 Please keep PRs focused on a single concern. For large changes, open an issue first to discuss the approach.
-
----
 
 ## License
 
