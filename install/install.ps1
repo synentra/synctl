@@ -3,15 +3,13 @@ param (
     [string]$VectraCtlRootPath = "$Env:SystemDrive\vectractl"
 )
 
-Write-Output ""
 $ErrorActionPreference = 'stop'
 
-#Escape space of VectraCtlRoot path
-$VectraCtlRootPath = $VectraCtlRootPath -replace ' ', '` '
+Write-Output ""
 
 # Constants
 $VectraCtlFileName = "vectractl.exe"
-$VectraCtlFilePath = "${VectraCtlRootPath}\${VectraCtlFileName}"
+$VectraCtlFilePath = Join-Path $VectraCtlRootPath $VectraCtlFileName
 
 # GitHub Org and repo hosting VectraCtl
 $GitHubOrg = "cortexiumlabs"
@@ -30,16 +28,16 @@ if ((Get-ExecutionPolicy) -gt 'RemoteSigned' -or (Get-ExecutionPolicy) -eq 'ByPa
     Write-Output "PowerShell requires an execution policy of 'RemoteSigned'."
     Write-Output "To make this change please run:"
     Write-Output "'Set-ExecutionPolicy RemoteSigned -scope CurrentUser'"
-    break
+    exit 1
 }
 
 # Change security protocol to support TLS 1.2 / 1.1 / 1.0 - old powershell uses TLS 1.0 as a default protocol
-[Net.ServicePointManager]::SecurityProtocol = "tls12, tls11, tls"
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 -bor [Net.SecurityProtocolType]::Tls11 -bor [Net.SecurityProtocolType]::Tls
 
 # Check if VectraCtl is installed.
 if (Test-Path $VectraCtlFilePath -PathType Leaf) {
     Write-Warning "VectraCtl is detected - $VectraCtlFilePath"
-    Invoke-Expression "$VectraCtlFilePath version"
+    & $VectraCtlFilePath version
     Write-Output "Reinstalling VectraCtl..."
 }
 else {
@@ -107,19 +105,19 @@ $zipFilePath = $VectraCtlRootPath + "\" + $assetName
 Write-Output "Downloading $zipFileUrl ..."
 
 $githubHeader.Accept = "application/octet-stream"
-$oldProgressPreference = $progressPreference;
-$progressPreference = 'SilentlyContinue';
+$oldProgressPreference = $global:ProgressPreference
+$global:ProgressPreference = 'SilentlyContinue'
 Invoke-WebRequest -Headers $githubHeader -Uri $zipFileUrl -OutFile $zipFilePath
-$progressPreference = $oldProgressPreference;
+$global:ProgressPreference = $oldProgressPreference
 if (!(Test-Path $zipFilePath -PathType Leaf)) {
-    throw "Failed to download FlowCtl binary - $zipFilePath"
+    throw "Failed to download VectraCtl binary - $zipFilePath"
 }
 
 # Extract VectraCtl to $VectraCtlRootPath
 Write-Output "Extracting $zipFilePath..."
 Microsoft.Powershell.Archive\Expand-Archive -Force -Path $zipFilePath -DestinationPath $VectraCtlRootPath
 if (!(Test-Path $VectraCtlFilePath -PathType Leaf)) {
-    throw "Failed to download VectraCtl archive - $zipFilePath"
+    throw "Failed to extract VectraCtl archive - $zipFilePath"
 }
 
 # Check the VectraCtl version
@@ -141,5 +139,6 @@ else {
     Write-Output "Added $VectraCtlRootPath to User Path - $UserPathEnvironmentVar"
 }
 
-Write-Output "`r`nVectraCtl is installed successfully."
+Write-Output ""
+Write-Output "VectraCtl is installed successfully."
 Write-Output "To get started with VectraCtl, please visit https://github.com/cortexiumlabs/vectractl."

@@ -26,10 +26,10 @@ getSystemInfo() {
         x86_64) ARCH="x64";;
     esac
 
-    OS=$(echo `uname`|tr '[:upper:]' '[:lower:]')
+    OS=$(uname | tr '[:upper:]' '[:lower:]')
 
     # Most linux distro needs root permission to copy the file to /usr/local/bin
-    if [[ "$OS" == "linux" || "$OS" == "darwin" ]] && [[ "VECTRACTL_INSTALL_DIR" == "/usr/local/bin" ]]; then
+    if [[ "$OS" == "linux" || "$OS" == "darwin" ]] && [[ "$VECTRACTL_INSTALL_DIR" == "/usr/local/bin" ]]; then
         USE_SUDO="true"
     fi
 }
@@ -47,7 +47,7 @@ verifySupported() {
     done
 
     if [[ "$current_osarch" == "darwin-arm64" ]]; then
-        if isReleaseAvailable $releaseTag; then
+        if isReleaseAvailable "$releaseTag"; then
             return
         else
             echo "The darwin_arm64 arch has no native binary for this version of VectraCtl, however you can use the amd64 version so long as you have rosetta installed"
@@ -88,7 +88,7 @@ checkHttpRequestVectraCtl() {
 checkExistingVectraCtl() {
     if [[ -f "$VECTRACTL_FILE" ]]; then
         echo -e "\nVectraCtl is detected:"
-        $VECTRACTL_FILE --version
+        "$VECTRACTL_FILE" --version
         echo -e "Reinstalling VectraCtl...\n"
     else
         echo -e "Installing VectraCtl...\n"
@@ -100,11 +100,15 @@ getLatestRelease() {
     local latest_release=""
 
     if [[ "$HTTP_REQUEST_VECTRACTL" == "curl" ]]; then
-        latest_release=$(curl -s $vectrActlReleaseUrl | grep \"tag_name\" | grep -v rc | awk 'NR==1{print $2}' |  sed -n 's/\"\(.*\)\",/\1/p')
+        latest_release=$(curl -s "$vectrActlReleaseUrl" | grep \"tag_name\" | grep -v rc | awk 'NR==1{print $2}' |  sed -n 's/\"\(.*\)\",/\1/p')
     else
-        latest_release=$(wget -q --header="Accept: application/json" -O - $vectrActlReleaseUrl | grep \"tag_name\" | grep -v rc | awk 'NR==1{print $2}' |  sed -n 's/\"\(.*\)\",/\1/p')
+        latest_release=$(wget -q --header="Accept: application/json" -O - "$vectrActlReleaseUrl" | grep \"tag_name\" | grep -v rc | awk 'NR==1{print $2}' |  sed -n 's/\"\(.*\)\",/\1/p')
     fi
 
+    if [[ -z "$latest_release" ]]; then
+        echo "Failed to get latest VectraCtl release tag from GitHub API"
+        exit 1
+    fi
     ret_val=$latest_release
 }
 
@@ -116,7 +120,7 @@ downloadFile() {
     DOWNLOAD_URL="${DOWNLOAD_BASE}/${LATEST_RELEASE_TAG}/${VECTRACTL_ARTIFACT}"
 
     # Create the temp directory
-    VECTRACTL_TMP_ROOT=$(mktemp -dt vectractl-install-XXXXXX)
+    VECTRACTL_TMP_ROOT=$(mktemp -d "${TMPDIR:-/tmp}/vectractl-install-XXXXXX")
     ARTIFACT_TMP_FILE="$VECTRACTL_TMP_ROOT/$VECTRACTL_ARTIFACT"
 
     echo "Downloading $DOWNLOAD_URL ..."
@@ -166,14 +170,14 @@ installFile() {
     if [[ -f "$VECTRACTL_FILE" ]]; then
         runAsRoot rm "$VECTRACTL_FILE"
     fi
-    chmod o+x $tmp_root_vectractl
-    mkdir -p $VECTRACTL_INSTALL_DIR
+    chmod +x "$tmp_root_vectractl"
+    mkdir -p "$VECTRACTL_INSTALL_DIR"
     runAsRoot cp "$tmp_root_vectractl" "$VECTRACTL_INSTALL_DIR"
 
     if [[ -f "$VECTRACTL_FILE" ]]; then
         echo "$VECTRACTL_FILENAME installed into $VECTRACTL_INSTALL_DIR successfully."
 
-        $VECTRACTL_FILE --version
+        "$VECTRACTL_FILE" --version
     else 
         echo "Failed to install $VECTRACTL_FILENAME"
         exit 1
