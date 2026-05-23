@@ -26,7 +26,7 @@ public class CommandActionTests
 {
     // ── Shared helpers ──────────────────────────────────────────────────────
 
-    private static IServiceProvider BuildProvider(Action<ServiceCollection>? configure = null)
+    private static ServiceProvider BuildProvider(Action<ServiceCollection>? configure = null)
     {
         var services = new ServiceCollection();
 

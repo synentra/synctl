@@ -21,7 +21,7 @@ public class ApiCommandActionTests
 {
     // ── Shared helpers ──────────────────────────────────────────────────────
 
-    private static IServiceProvider BuildProvider(Action<ServiceCollection>? configure = null)
+    private static ServiceProvider BuildProvider(Action<ServiceCollection>? configure = null)
     {
         var services = new ServiceCollection();
         services.AddSingleton(Substitute.For<IVectraCtlLogger>());

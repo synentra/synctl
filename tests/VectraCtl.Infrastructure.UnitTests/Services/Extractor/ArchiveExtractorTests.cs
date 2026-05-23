@@ -19,6 +19,7 @@ public class ArchiveExtractorTests : IDisposable
     {
         if (Directory.Exists(_tempDir))
             Directory.Delete(_tempDir, recursive: true);
+        GC.SuppressFinalize(this);
     }
 
     // --- ExtractArchive: unsupported extension ---
