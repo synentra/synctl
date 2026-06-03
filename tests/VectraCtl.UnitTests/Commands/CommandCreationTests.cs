@@ -69,6 +69,7 @@ public class CommandCreationTests
         cmd.Subcommands.Should().Contain(s => s.Name == "list");
         cmd.Subcommands.Should().Contain(s => s.Name == "register");
         cmd.Subcommands.Should().Contain(s => s.Name == "assign-policy");
+        cmd.Subcommands.Should().Contain(s => s.Name == "lift-quarantine");
         cmd.Subcommands.Should().Contain(s => s.Name == "delete");
     }
 

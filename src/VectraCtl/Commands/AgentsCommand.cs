@@ -15,6 +15,7 @@ internal static class AgentsCommand
         command.Subcommands.Add(CreateListCommand(serviceProvider));
         command.Subcommands.Add(CreateRegisterCommand(serviceProvider));
         command.Subcommands.Add(CreateAssignPolicyCommand(serviceProvider));
+        command.Subcommands.Add(CreateLiftQuarantineCommand(serviceProvider));
         command.Subcommands.Add(CreateDeleteCommand(serviceProvider));
 
         return command;
@@ -40,6 +41,25 @@ internal static class AgentsCommand
                 parseResult.GetValue(pageOption),
                 parseResult.GetValue(pageSizeOption), ct);
             logger.Write(agents, parseResult.GetValue(outputOption));
+        }));
+
+        return cmd;
+    }
+
+    private static Command CreateLiftQuarantineCommand(IServiceProvider serviceProvider)
+    {
+        var agentIdOption = new Option<Guid>("--agent-id") { Description = "Agent ID (GUID)", Required = true };
+
+        var cmd = new Command("lift-quarantine", "Lift quarantine mode for an AI agent")
+        {
+            agentIdOption
+        };
+
+        cmd.SetAction((parseResult, ct) => CommandHelpers.ExecuteAsync(serviceProvider, async (logger, sp) =>
+        {
+            var client = sp.GetRequiredService<IVectraClient>();
+            await client.Agents.LiftQuarantineAsync(parseResult.GetValue(agentIdOption)!, ct);
+            logger.Write("Quarantine lifted successfully.");
         }));
 
         return cmd;

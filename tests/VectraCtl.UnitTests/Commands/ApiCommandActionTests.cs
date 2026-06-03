@@ -187,6 +187,44 @@ public class ApiCommandActionTests
         provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
+    [Fact]
+    public async Task AgentsCommand_LiftQuarantine_Success_WritesSuccess()
+    {
+        var provider = BuildProvider(s =>
+        {
+            var client = Substitute.For<IVectraClient>();
+            var agentClient = Substitute.For<IVectraAgentClient>();
+            agentClient.LiftQuarantineAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+                       .Returns(Task.CompletedTask);
+            client.Agents.Returns(agentClient);
+            s.AddSingleton(client);
+        });
+
+        var cmd = AgentsCommand.Create(provider);
+        await InvokeAsync(cmd, ["lift-quarantine", "--agent-id", Guid.NewGuid().ToString()]);
+
+        provider.GetRequiredService<IVectraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("Quarantine lifted")));
+    }
+
+    [Fact]
+    public async Task AgentsCommand_LiftQuarantine_Exception_WritesError()
+    {
+        var provider = BuildProvider(s =>
+        {
+            var client = Substitute.For<IVectraClient>();
+            var agentClient = Substitute.For<IVectraAgentClient>();
+            agentClient.LiftQuarantineAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+                       .Throws(new Exception("bad request"));
+            client.Agents.Returns(agentClient);
+            s.AddSingleton(client);
+        });
+
+        var cmd = AgentsCommand.Create(provider);
+        await InvokeAsync(cmd, ["lift-quarantine", "--agent-id", Guid.NewGuid().ToString()]);
+
+        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+    }
+
     // ── HitlCommand ──────────────────────────────────────────────────────────
 
     [Fact]
