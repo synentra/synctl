@@ -1,6 +1,6 @@
 param (
     [string]$Version,
-    [string]$VectraCtlRootPath = "$Env:SystemDrive\vectractl"
+    [string]$SynCtlRootPath = "$Env:SystemDrive\synctl"
 )
 
 $ErrorActionPreference = 'stop'
@@ -8,12 +8,12 @@ $ErrorActionPreference = 'stop'
 Write-Output ""
 
 # Constants
-$VectraCtlFileName = "vectractl.exe"
-$VectraCtlFilePath = Join-Path $VectraCtlRootPath $VectraCtlFileName
+$SynCtlFileName = "synctl.exe"
+$SynCtlFilePath = Join-Path $SynCtlRootPath $SynCtlFileName
 
-# GitHub Org and repo hosting VectraCtl
-$GitHubOrg = "cortexiumlabs"
-$GitHubRepo = "vectractl"
+# GitHub Org and repo hosting SynCtl
+$GitHubOrg = "synentra"
+$GitHubRepo = "synctl"
 
 # Set Github request authentication for basic authentication.
 if ($Env:GITHUB_USER) {
@@ -34,22 +34,22 @@ if ((Get-ExecutionPolicy) -gt 'RemoteSigned' -or (Get-ExecutionPolicy) -eq 'ByPa
 # Change security protocol to support TLS 1.2 / 1.1 / 1.0 - old powershell uses TLS 1.0 as a default protocol
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 -bor [Net.SecurityProtocolType]::Tls11 -bor [Net.SecurityProtocolType]::Tls
 
-# Check if VectraCtl is installed.
-if (Test-Path $VectraCtlFilePath -PathType Leaf) {
-    Write-Warning "VectraCtl is detected - $VectraCtlFilePath"
-    & $VectraCtlFilePath version
-    Write-Output "Reinstalling VectraCtl..."
+# Check if SynCtl is installed.
+if (Test-Path $SynCtlFilePath -PathType Leaf) {
+    Write-Warning "SynCtl is detected - $SynCtlFilePath"
+    & $SynCtlFilePath version
+    Write-Output "Reinstalling SynCtl..."
 }
 else {
-    Write-Output "Installing VectraCtl..."
+    Write-Output "Installing SynCtl..."
 }
 
-# Create VectraCtl Directory
-Write-Output "Creating $VectraCtlRootPath directory"
-New-Item -ErrorAction Ignore -Path $VectraCtlRootPath -ItemType "directory"
-if (-not (Test-Path $VectraCtlRootPath -PathType Container)) {
-    Write-Warning "Please visit https://github.com/cortexiumlabs/vectractl for instructions on how to install without admin rights."
-    throw "Cannot create $VectraCtlRootPath"
+# Create SynCtl Directory
+Write-Output "Creating $SynCtlRootPath directory"
+New-Item -ErrorAction Ignore -Path $SynCtlRootPath -ItemType "directory"
+if (-not (Test-Path $SynCtlRootPath -PathType Container)) {
+    Write-Warning "Please visit https://github.com/synentra/synctl for instructions on how to install without admin rights."
+    throw "Cannot create $SynCtlRootPath"
 }
 
 # Get the list of release from GitHub
@@ -57,7 +57,7 @@ $releaseJsonUrl = "https://api.github.com/repos/${GitHubOrg}/${GitHubRepo}/relea
 
 $releases = Invoke-RestMethod -Headers $githubHeader -Uri $releaseJsonUrl -Method Get
 if ($releases.Count -eq 0) {
-    throw "No releases from github.com/cortexiumlabs/vectractl repo"
+    throw "No releases from github.com/synentra/synctl repo"
 }
 
 # Get latest or specified version info from releases
@@ -84,7 +84,7 @@ function GetWindowsAsset {
     )
     $windowsAsset = $Release | Select-Object -ExpandProperty assets | Where-Object { $_.name -like "*windows-x64.zip" }
     if (-not $windowsAsset) {
-        throw "Cannot find the windows VectraCtl binary"
+        throw "Cannot find the windows SynCtl binary"
     }
     [hashtable]$return = @{}
     $return.url = $windowsAsset.url
@@ -95,13 +95,13 @@ function GetWindowsAsset {
 
 $release = GetVersionInfo -Version $Version -Releases $releases
 if (-not $release) {
-    throw "Cannot find the specified VectraCtl binary version"
+    throw "Cannot find the specified SynCtl binary version"
 }
 $asset = GetWindowsAsset -Release $release
 $zipFileUrl = $asset.url
 $assetName = $asset.name
 
-$zipFilePath = $VectraCtlRootPath + "\" + $assetName
+$zipFilePath = $SynCtlRootPath + "\" + $assetName
 Write-Output "Downloading $zipFileUrl ..."
 
 $githubHeader.Accept = "application/octet-stream"
@@ -110,35 +110,35 @@ $global:ProgressPreference = 'SilentlyContinue'
 Invoke-WebRequest -Headers $githubHeader -Uri $zipFileUrl -OutFile $zipFilePath
 $global:ProgressPreference = $oldProgressPreference
 if (-not (Test-Path $zipFilePath -PathType Leaf)) {
-    throw "Failed to download VectraCtl binary - $zipFilePath"
+    throw "Failed to download SynCtl binary - $zipFilePath"
 }
 
-# Extract VectraCtl to $VectraCtlRootPath
+# Extract SynCtl to $SynCtlRootPath
 Write-Output "Extracting $zipFilePath..."
-Microsoft.Powershell.Archive\Expand-Archive -Force -Path $zipFilePath -DestinationPath $VectraCtlRootPath
-if (-not (Test-Path $VectraCtlFilePath -PathType Leaf)) {
-    throw "Failed to extract VectraCtl archive - $zipFilePath"
+Microsoft.Powershell.Archive\Expand-Archive -Force -Path $zipFilePath -DestinationPath $SynCtlRootPath
+if (-not (Test-Path $SynCtlFilePath -PathType Leaf)) {
+    throw "Failed to extract SynCtl archive - $zipFilePath"
 }
 
-# Check the VectraCtl version
-# Invoke-Expression "$VectraCtlFilePath version"
+# Check the SynCtl version
+# Invoke-Expression "$SynCtlFilePath version"
 
 # Clean up zipfile
 Write-Output "Clean up $zipFilePath..."
 Remove-Item $zipFilePath -Force
 
-# Add VectraCtlRootPath directory to User Path environment variable
-Write-Output "Try to add $VectraCtlRootPath to User Path Environment variable..."
+# Add SynCtlRootPath directory to User Path environment variable
+Write-Output "Try to add $SynCtlRootPath to User Path Environment variable..."
 $UserPathEnvironmentVar = [Environment]::GetEnvironmentVariable("PATH", "User")
-if ($UserPathEnvironmentVar -like '*vectractl*') {
-    Write-Output "Skipping to add $VectraCtlRootPath to User Path - $UserPathEnvironmentVar"
+if ($UserPathEnvironmentVar -like '*synctl*') {
+    Write-Output "Skipping to add $SynCtlRootPath to User Path - $UserPathEnvironmentVar"
 }
 else {
-    [System.Environment]::SetEnvironmentVariable("PATH", $UserPathEnvironmentVar + ";$VectraCtlRootPath", "User")
+    [System.Environment]::SetEnvironmentVariable("PATH", $UserPathEnvironmentVar + ";$SynCtlRootPath", "User")
     $UserPathEnvironmentVar = [Environment]::GetEnvironmentVariable("PATH", "User")
-    Write-Output "Added $VectraCtlRootPath to User Path - $UserPathEnvironmentVar"
+    Write-Output "Added $SynCtlRootPath to User Path - $UserPathEnvironmentVar"
 }
 
 Write-Output ""
-Write-Output "VectraCtl is installed successfully."
-Write-Output "To get started with VectraCtl, please visit https://github.com/cortexiumlabs/vectractl."
+Write-Output "SynCtl is installed successfully."
+Write-Output "To get started with SynCtl, please visit https://github.com/synentra/synctl."
