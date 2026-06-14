@@ -8,6 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Core\**" />
+    <Compile Remove="Infrastructure\**" />
+    <EmbeddedResource Remove="Core\**" />
+    <EmbeddedResource Remove="Infrastructure\**" />
+    <None Remove="Core\**" />
+    <None Remove="Infrastructure\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.4" />
     <PackageReference Include="Octokit" Version="14.0.0" />
     <PackageReference Include="SharpCompress" Version="0.48.1" />
@@ -25,17 +34,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\SynentraCtl\SynentraCtl.csproj" />
     <ProjectReference Include="..\..\src\SynentraCtl.Infrastructure\SynentraCtl.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Core\" />
-    <Folder Include="Infrastructure\Extensions\" />
-    <Folder Include="Infrastructure\Serialization\" />
-    <Folder Include="Infrastructure\Services\Configuration\" />
-    <Folder Include="Infrastructure\Services\Docker\" />
-    <Folder Include="Infrastructure\Services\Extractor\" />
-    <Folder Include="Infrastructure\Services\Github\" />
-    <Folder Include="Infrastructure\Services\ProcessHost\" />
   </ItemGroup>
 
 </Project>
