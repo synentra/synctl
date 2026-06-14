@@ -77,8 +77,8 @@ jobs:
         env:
           REL_VERSION: ${{ inputs.rel_version }}
         run: |
-          release_name="vectractl-${{ matrix.title }}-${{ matrix.os_arch }}"
-          dotnet publish src/VectraCtl/VectraCtl.csproj \
+          release_name="synctl-${{ matrix.title }}-${{ matrix.os_arch }}"
+          dotnet publish src/SynentraCtl/SynentraCtl.csproj \
             /property:PublishSingleFile=true \
             /property:PublishReadyToRun=true \
             --runtime "${{ matrix.kind }}-${{ matrix.os_arch }}" \
@@ -98,7 +98,7 @@ jobs:
       - name: Upload binaries
         uses: actions/upload-artifact@v4
         with:
-          name: vectractl-${{ matrix.title }}-${{ matrix.os_arch }}
+          name: synctl-${{ matrix.title }}-${{ matrix.os_arch }}
           path: |
             ${{ github.workspace }}/dist/*.zip
             ${{ github.workspace }}/dist/*.tar.gz
@@ -116,7 +116,7 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
-          pattern: vectractl-*
+          pattern: synctl-*
           path: ${{ env.ARTIFACT_DIR }}
           merge-multiple: true
 
@@ -149,7 +149,7 @@ jobs:
         uses: ncipollo/release-action@40bb172bd05f266cf9ba4ff965cb61e9ee5f6d01 # v1.9.0
         with:
           tag: v${{ inputs.rel_version }}
-          name: VectraCtl v${{ inputs.rel_version }}
+          name: SynCtl v${{ inputs.rel_version }}
           generateReleaseNotes: true
           prerelease: ${{ inputs.prerelease }}
           artifacts: "${{ env.ARTIFACT_DIR }}/*"
