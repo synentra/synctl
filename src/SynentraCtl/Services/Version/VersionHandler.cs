@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace VectraCtl.Services.Version;
+namespace SynentraCtl.Services.Version;
 
 public class VersionHandler : IVersion
 {
@@ -13,7 +13,7 @@ public class VersionHandler : IVersion
         _versionInfoProvider = versionInfoProvider;
     }
 
-    public string VectraCtlVersion
+    public string SynentraCtlVersion
     {
         get
         {

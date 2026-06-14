@@ -1,24 +1,24 @@
 using Microsoft.Extensions.DependencyInjection;
 using Octokit;
-using VectraCtl.Core.Services.Configuration;
-using VectraCtl.Core.Services.Docker;
-using VectraCtl.Core.Services.Extractor;
-using VectraCtl.Core.Services.Github;
-using VectraCtl.Core.Services.ProcessHost;
-using VectraCtl.Infrastructure.Services.Configuration;
-using VectraCtl.Infrastructure.Services.Docker;
-using VectraCtl.Infrastructure.Services.Extractor;
-using VectraCtl.Infrastructure.Services.Github;
-using VectraCtl.Infrastructure.Services.ProcessHost;
+using SynentraCtl.Core.Services.Configuration;
+using SynentraCtl.Core.Services.Docker;
+using SynentraCtl.Core.Services.Extractor;
+using SynentraCtl.Core.Services.Github;
+using SynentraCtl.Core.Services.ProcessHost;
+using SynentraCtl.Infrastructure.Services.Configuration;
+using SynentraCtl.Infrastructure.Services.Docker;
+using SynentraCtl.Infrastructure.Services.Extractor;
+using SynentraCtl.Infrastructure.Services.Github;
+using SynentraCtl.Infrastructure.Services.ProcessHost;
 
-namespace VectraCtl.Infrastructure.Extensions;
+namespace SynentraCtl.Infrastructure.Extensions;
 
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
         services
-                .AddSingleton<IGitHubClient>(new GitHubClient(new ProductHeaderValue("vectra")))
+                .AddSingleton<IGitHubClient>(new GitHubClient(new ProductHeaderValue("synentra")))
                 .AddSingleton<IGitHubReleaseManager, GitHubReleaseManager>()
                 .AddScoped<IProcessProvider, DefaultProcessProvider>()
                 .AddScoped<IProcessHandler, ProcessHandler>()

@@ -1,4 +1,4 @@
-namespace VectraCtl.Core.Models.Configuration;
+namespace SynentraCtl.Core.Models.Configuration;
 
 public class AppSettings
 {

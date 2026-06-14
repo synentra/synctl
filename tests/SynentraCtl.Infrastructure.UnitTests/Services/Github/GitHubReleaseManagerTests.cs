@@ -2,9 +2,9 @@ using FluentAssertions;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Octokit;
-using VectraCtl.Infrastructure.Services.Github;
+using SynentraCtl.Infrastructure.Services.Github;
 
-namespace VectraCtl.Infrastructure.UnitTests.Services.Github;
+namespace SynentraCtl.Infrastructure.UnitTests.Services.Github;
 
 public class GitHubReleaseManagerTests : IDisposable
 {
@@ -225,7 +225,7 @@ public class GitHubReleaseManagerTests : IDisposable
     {
         var dataFile = Path.Combine(_tempDir, "release3.zip");
         var hashFile = Path.Combine(_tempDir, "release3.sha256");
-        File.WriteAllText(dataFile, "vectra");
+        File.WriteAllText(dataFile, "synentra");
         var hash = _sut.GetAssetHashCode(dataFile);
         File.WriteAllText(hashFile, $"{hash}  release3.zip");
 

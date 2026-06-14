@@ -1,8 +1,8 @@
 using FluentAssertions;
 using NSubstitute;
-using VectraCtl.ApplicationBuilders;
+using SynentraCtl.ApplicationBuilders;
 
-namespace VectraCtl.UnitTests.ApplicationBuilders;
+namespace SynentraCtl.UnitTests.ApplicationBuilders;
 
 public class CliApplicationBuilderTests
 {
@@ -24,7 +24,7 @@ public class CliApplicationBuilderTests
     [Fact]
     public async Task RunAsync_UnknownArgs_ReturnsNonZeroOrZero()
     {
-        // CliApplicationBuilder needs a real service provider because VectraCommandLine.Create
+        // CliApplicationBuilder needs a real service provider because SynentraCommandLine.Create
         // calls GetRequiredService. We verify it returns an int exit code (any value).
         var serviceProvider = Substitute.For<IServiceProvider>();
 

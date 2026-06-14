@@ -2,17 +2,17 @@
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
 using Synentra.Client.Extensions;
-using VectraCtl.ApplicationBuilders;
-using VectraCtl.Core.Serialization;
-using VectraCtl.Core.Services.Location;
-using VectraCtl.Core.Services.Logger;
-using VectraCtl.Infrastructure.Extensions;
-using VectraCtl.Infrastructure.Serialization;
-using VectraCtl.Services.Location;
-using VectraCtl.Services.Logger;
-using VectraCtl.Services.Version;
+using SynentraCtl.ApplicationBuilders;
+using SynentraCtl.Core.Serialization;
+using SynentraCtl.Core.Services.Location;
+using SynentraCtl.Core.Services.Logger;
+using SynentraCtl.Infrastructure.Extensions;
+using SynentraCtl.Infrastructure.Serialization;
+using SynentraCtl.Services.Location;
+using SynentraCtl.Services.Logger;
+using SynentraCtl.Services.Version;
 
-namespace VectraCtl.Extensions;
+namespace SynentraCtl.Extensions;
 
 public static class ServiceCollectionExtensions
 {
@@ -34,7 +34,7 @@ public static class ServiceCollectionExtensions
             .AddInfrastructure()
             .AddLogging(c => c.ClearProviders())
             .AddScoped<ILocation, LocationService>()
-            .AddScoped<IVectraCtlLogger, SpectreConsoleLogger>()
+            .AddScoped<ISynentraCtlLogger, SpectreConsoleLogger>()
             .AddScoped<IFileSystem, FileSystemWrapper>()
             .AddScoped<IVersionInfoProvider, VersionInfoProvider>()
             .AddTransient<IVersion, VersionHandler>()

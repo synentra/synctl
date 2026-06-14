@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using VectraCtl.ApplicationBuilders;
-using VectraCtl.Core.Services.Logger;
-using VectraCtl.Extensions;
+using SynentraCtl.ApplicationBuilders;
+using SynentraCtl.Core.Services.Logger;
+using SynentraCtl.Extensions;
 
 IServiceProvider serviceProvider = default!;
 
@@ -27,7 +27,7 @@ catch (Exception ex)
 {
     if (serviceProvider != null)
     {
-        var formatter = serviceProvider.GetService<IVectraCtlLogger>();
+        var formatter = serviceProvider.GetService<ISynentraCtlLogger>();
         formatter?.WriteError(ex.Message);
     }
     else

@@ -2,12 +2,12 @@
 using System.Dynamic;
 using System.Text.Json;
 using System.Xml.Linq;
-using VectraCtl.Core.Serialization;
-using VectraCtl.Core.Services.Logger;
+using SynentraCtl.Core.Serialization;
+using SynentraCtl.Core.Services.Logger;
 
-namespace VectraCtl.Services.Logger;
+namespace SynentraCtl.Services.Logger;
 
-public class SpectreConsoleLogger : IVectraCtlLogger
+public class SpectreConsoleLogger : ISynentraCtlLogger
 {
     private readonly IAnsiConsole _console;
     private readonly IJsonSerializer _serializer;

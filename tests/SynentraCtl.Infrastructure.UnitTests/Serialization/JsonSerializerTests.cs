@@ -1,12 +1,12 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using FluentAssertions;
-using VectraCtl.Core.Exceptions;
-using VectraCtl.Core.Serialization;
-using VectraCtl.Infrastructure.Serialization;
-using InfraJsonSerializer = VectraCtl.Infrastructure.Serialization.JsonSerializer;
+using SynentraCtl.Core.Exceptions;
+using SynentraCtl.Core.Serialization;
+using SynentraCtl.Infrastructure.Serialization;
+using InfraJsonSerializer = SynentraCtl.Infrastructure.Serialization.JsonSerializer;
 
-namespace VectraCtl.Infrastructure.UnitTests.Serialization;
+namespace SynentraCtl.Infrastructure.UnitTests.Serialization;
 
 public class JsonSerializerTests
 {
@@ -23,10 +23,10 @@ public class JsonSerializerTests
     // --- Serialize(object?) ---
 
     [Fact]
-    public void Serialize_WithNull_ThrowsVectraCtlException()
+    public void Serialize_WithNull_ThrowsSynentraCtlException()
     {
         var act = () => _sut.Serialize(null);
-        act.Should().Throw<VectraCtlException>().WithMessage("*null*");
+        act.Should().Throw<SynentraCtlException>().WithMessage("*null*");
     }
 
     [Fact]
@@ -70,10 +70,10 @@ public class JsonSerializerTests
     }
 
     [Fact]
-    public void Serialize_WithNullInput_ThrowsVectraCtlException()
+    public void Serialize_WithNullInput_ThrowsSynentraCtlException()
     {
         var act = () => _sut.Serialize(null, new JsonSerializationConfiguration());
-        act.Should().Throw<VectraCtlException>();
+        act.Should().Throw<SynentraCtlException>();
     }
 
     [Fact]

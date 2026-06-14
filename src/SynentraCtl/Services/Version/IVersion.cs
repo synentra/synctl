@@ -1,7 +1,7 @@
-﻿namespace VectraCtl.Services.Version;
+﻿namespace SynentraCtl.Services.Version;
 
 public interface IVersion
 {
-    string VectraCtlVersion { get; }
+    string SynentraCtlVersion { get; }
     string GetVersionFromPath(string path);
 }

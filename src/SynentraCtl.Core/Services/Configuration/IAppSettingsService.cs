@@ -1,6 +1,6 @@
-using VectraCtl.Core.Models.Configuration;
+using SynentraCtl.Core.Models.Configuration;
 
-namespace VectraCtl.Core.Services.Configuration;
+namespace SynentraCtl.Core.Services.Configuration;
 
 public interface IAppSettingsService
 {

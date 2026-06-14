@@ -3,19 +3,19 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using System.CommandLine;
-using VectraCtl.Commands;
-using VectraCtl.Core.Models.Configuration;
-using VectraCtl.Core.Models.Docker;
-using VectraCtl.Core.Services.Configuration;
-using VectraCtl.Core.Services.Docker;
-using VectraCtl.Core.Services.Extractor;
-using VectraCtl.Core.Services.Github;
-using VectraCtl.Core.Services.Location;
-using VectraCtl.Core.Services.Logger;
-using VectraCtl.Core.Services.ProcessHost;
-using VectraCtl.Services.Version;
+using SynentraCtl.Commands;
+using SynentraCtl.Core.Models.Configuration;
+using SynentraCtl.Core.Models.Docker;
+using SynentraCtl.Core.Services.Configuration;
+using SynentraCtl.Core.Services.Docker;
+using SynentraCtl.Core.Services.Extractor;
+using SynentraCtl.Core.Services.Github;
+using SynentraCtl.Core.Services.Location;
+using SynentraCtl.Core.Services.Logger;
+using SynentraCtl.Core.Services.ProcessHost;
+using SynentraCtl.Services.Version;
 
-namespace VectraCtl.UnitTests.Commands;
+namespace SynentraCtl.UnitTests.Commands;
 
 /// <summary>
 /// Tests that invoke the <see cref="Command.SetAction"/> handlers of each command so that the
@@ -30,7 +30,7 @@ public class CommandActionTests
     {
         var services = new ServiceCollection();
 
-        services.AddSingleton(Substitute.For<IVectraCtlLogger>());
+        services.AddSingleton(Substitute.For<ISynentraCtlLogger>());
         services.AddSingleton(Substitute.For<ILocation>());
         services.AddSingleton(Substitute.For<IDockerService>());
         services.AddSingleton(Substitute.For<IAppSettingsService>());
@@ -85,7 +85,7 @@ public class CommandActionTests
         var cmd = InitCommand.Create(provider);
         await InvokeAsync(cmd, ["--docker"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     [Fact]
@@ -93,7 +93,7 @@ public class CommandActionTests
     {
         var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
         Directory.CreateDirectory(tempDir);
-        var binaryFile = Path.Combine(tempDir, "vectra");
+        var binaryFile = Path.Combine(tempDir, "synentra");
         File.WriteAllText(binaryFile, "fake");
 
         try
@@ -101,8 +101,8 @@ public class CommandActionTests
             var provider = BuildProvider(s =>
             {
                 var loc = Substitute.For<ILocation>();
-                loc.DefaultVectraBinaryDirectoryName.Returns(tempDir);
-                loc.LookupVectraBinaryFilePath(Arg.Any<string>()).Returns(binaryFile);
+                loc.DefaultSynentraBinaryDirectoryName.Returns(tempDir);
+                loc.LookupSynentraBinaryFilePath(Arg.Any<string>()).Returns(binaryFile);
                 s.AddSingleton(loc);
 
                 var settings = Substitute.For<IAppSettingsService>();
@@ -117,7 +117,7 @@ public class CommandActionTests
             var cmd = InitCommand.Create(provider);
             await InvokeAsync(cmd, []);
 
-            provider.GetRequiredService<IVectraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("already installed")));
+            provider.GetRequiredService<ISynentraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("already installed")));
         }
         finally
         {
@@ -129,13 +129,13 @@ public class CommandActionTests
     public async Task InitCommand_BinaryGitHubFails_WritesError()
     {
         var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-        var binaryFile = Path.Combine(tempDir, "vectra");
+        var binaryFile = Path.Combine(tempDir, "synentra");
 
         var provider = BuildProvider(s =>
         {
             var loc = Substitute.For<ILocation>();
-            loc.DefaultVectraBinaryDirectoryName.Returns(tempDir);
-            loc.LookupVectraBinaryFilePath(Arg.Any<string>()).Returns(binaryFile);
+            loc.DefaultSynentraBinaryDirectoryName.Returns(tempDir);
+            loc.LookupSynentraBinaryFilePath(Arg.Any<string>()).Returns(binaryFile);
             s.AddSingleton(loc);
 
             var gh = Substitute.For<IGitHubReleaseManager>();
@@ -150,7 +150,7 @@ public class CommandActionTests
         var cmd = InitCommand.Create(provider);
         await InvokeAsync(cmd, []);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     [Fact]
@@ -177,7 +177,7 @@ public class CommandActionTests
             s.AddSingleton(settings);
 
             var loc = Substitute.For<ILocation>();
-            loc.DefaultVectraDirectoryName.Returns("/tmp/.vectra");
+            loc.DefaultSynentraDirectoryName.Returns("/tmp/.synentra");
             s.AddSingleton(loc);
         });
 
@@ -198,8 +198,8 @@ public class CommandActionTests
             s.AddSingleton(gh);
 
             var loc = Substitute.For<ILocation>();
-            loc.DefaultVectraBinaryDirectoryName.Returns(Path.GetTempPath());
-            loc.LookupVectraBinaryFilePath(Arg.Any<string>()).Returns(Path.Combine(Path.GetTempPath(), "no-binary"));
+            loc.DefaultSynentraBinaryDirectoryName.Returns(Path.GetTempPath());
+            loc.LookupSynentraBinaryFilePath(Arg.Any<string>()).Returns(Path.Combine(Path.GetTempPath(), "no-binary"));
             s.AddSingleton(loc);
 
             var settings = Substitute.For<IAppSettingsService>();
@@ -210,7 +210,7 @@ public class CommandActionTests
         var cmd = InitCommand.Create(provider);
         await InvokeAsync(cmd, []);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     // ── RunCommand ──────────────────────────────────────────────────────────
@@ -236,7 +236,7 @@ public class CommandActionTests
         var cmd = RunCommand.Create(provider);
         await InvokeAsync(cmd, ["--docker"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     [Fact]
@@ -251,8 +251,8 @@ public class CommandActionTests
             s.AddSingleton(appSettings);
 
             var loc = Substitute.For<ILocation>();
-            loc.DefaultVectraBinaryDirectoryName.Returns(Path.GetTempPath());
-            loc.LookupVectraBinaryFilePath(Arg.Any<string>()).Returns(Path.Combine(Path.GetTempPath(), "no-binary"));
+            loc.DefaultSynentraBinaryDirectoryName.Returns(Path.GetTempPath());
+            loc.LookupSynentraBinaryFilePath(Arg.Any<string>()).Returns(Path.Combine(Path.GetTempPath(), "no-binary"));
             s.AddSingleton(loc);
 
             var gh = Substitute.For<IGitHubReleaseManager>();
@@ -263,7 +263,7 @@ public class CommandActionTests
         var cmd = RunCommand.Create(provider);
         await InvokeAsync(cmd, []);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("Docker")));
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("Docker")));
     }
 
     [Fact]
@@ -287,14 +287,14 @@ public class CommandActionTests
             s.AddSingleton(gh);
 
             var loc = Substitute.For<ILocation>();
-            loc.DefaultVectraDirectoryName.Returns(Path.GetTempPath());
+            loc.DefaultSynentraDirectoryName.Returns(Path.GetTempPath());
             s.AddSingleton(loc);
         });
 
         var cmd = RunCommand.Create(provider);
         await InvokeAsync(cmd, ["--docker", "--background"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("already running")));
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("already running")));
     }
 
     [Fact]
@@ -320,7 +320,7 @@ public class CommandActionTests
             s.AddSingleton(gh);
 
             var loc = Substitute.For<ILocation>();
-            loc.DefaultVectraDirectoryName.Returns(Path.GetTempPath());
+            loc.DefaultSynentraDirectoryName.Returns(Path.GetTempPath());
             s.AddSingleton(loc);
         });
 
@@ -341,15 +341,15 @@ public class CommandActionTests
             s.AddSingleton(appSettings);
 
             var loc = Substitute.For<ILocation>();
-            loc.DefaultVectraBinaryDirectoryName.Returns(Path.GetTempPath());
-            loc.LookupVectraBinaryFilePath(Arg.Any<string>()).Returns(Path.Combine(Path.GetTempPath(), "no-binary"));
+            loc.DefaultSynentraBinaryDirectoryName.Returns(Path.GetTempPath());
+            loc.LookupSynentraBinaryFilePath(Arg.Any<string>()).Returns(Path.Combine(Path.GetTempPath(), "no-binary"));
             s.AddSingleton(loc);
         });
 
         var cmd = RunCommand.Create(provider);
         await InvokeAsync(cmd, []);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     // ── StopCommand ─────────────────────────────────────────────────────────
@@ -371,7 +371,7 @@ public class CommandActionTests
         var cmd = StopCommand.Create(provider);
         await InvokeAsync(cmd, ["--docker"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     [Fact]
@@ -392,7 +392,7 @@ public class CommandActionTests
         var cmd = StopCommand.Create(provider);
         await InvokeAsync(cmd, ["--docker"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("not running")));
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("not running")));
     }
 
     [Fact]
@@ -415,7 +415,7 @@ public class CommandActionTests
         var cmd = StopCommand.Create(provider);
         await InvokeAsync(cmd, ["--docker"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("stopped successfully")));
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("stopped successfully")));
     }
 
     [Fact]
@@ -438,7 +438,7 @@ public class CommandActionTests
         var cmd = StopCommand.Create(provider);
         await InvokeAsync(cmd, ["--docker"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     [Fact]
@@ -453,7 +453,7 @@ public class CommandActionTests
             s.AddSingleton(appSettings);
 
             var loc = Substitute.For<ILocation>();
-            loc.VectraBinaryName.Returns("vectra-nonexistent-xyz");
+            loc.SynentraBinaryName.Returns("synentra-nonexistent-xyz");
             s.AddSingleton(loc);
         });
 
@@ -461,7 +461,7 @@ public class CommandActionTests
         // No --docker flag, binary mode — no running process expected
         await InvokeAsync(cmd, []);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().Write(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().Write(Arg.Any<string>());
     }
 
     [Fact]
@@ -477,7 +477,7 @@ public class CommandActionTests
         var cmd = StopCommand.Create(provider);
         await InvokeAsync(cmd, []);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     // ── UninstallCommand ────────────────────────────────────────────────────
@@ -499,7 +499,7 @@ public class CommandActionTests
         var cmd = UninstallCommand.Create(provider);
         await InvokeAsync(cmd, ["--docker"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     [Fact]
@@ -520,7 +520,7 @@ public class CommandActionTests
         var cmd = UninstallCommand.Create(provider);
         await InvokeAsync(cmd, ["--docker"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("not found")));
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("not found")));
     }
 
     [Fact]
@@ -543,7 +543,7 @@ public class CommandActionTests
         var cmd = UninstallCommand.Create(provider);
         await InvokeAsync(cmd, ["--docker"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("uninstalled successfully")));
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("uninstalled successfully")));
     }
 
     [Fact]
@@ -561,8 +561,8 @@ public class CommandActionTests
                 s.AddSingleton(ph);
 
                 var loc = Substitute.For<ILocation>();
-                loc.VectraBinaryName.Returns("vectra");
-                loc.DefaultVectraDirectoryName.Returns(tempDir);
+                loc.SynentraBinaryName.Returns("synentra");
+                loc.DefaultSynentraDirectoryName.Returns(tempDir);
                 s.AddSingleton(loc);
 
                 var settings = Substitute.For<IAppSettingsService>();
@@ -593,8 +593,8 @@ public class CommandActionTests
             s.AddSingleton(ph);
 
             var loc = Substitute.For<ILocation>();
-            loc.VectraBinaryName.Returns("vectra");
-            loc.DefaultVectraDirectoryName.Returns(tempDir);
+            loc.SynentraBinaryName.Returns("synentra");
+            loc.DefaultSynentraDirectoryName.Returns(tempDir);
             s.AddSingleton(loc);
 
             var settings = Substitute.For<IAppSettingsService>();
@@ -618,7 +618,7 @@ public class CommandActionTests
             s.AddSingleton(ph);
 
             var loc = Substitute.For<ILocation>();
-            loc.VectraBinaryName.Returns("vectra");
+            loc.SynentraBinaryName.Returns("synentra");
             s.AddSingleton(loc);
 
             var settings = Substitute.For<IAppSettingsService>();
@@ -629,7 +629,7 @@ public class CommandActionTests
         var cmd = UninstallCommand.Create(provider);
         await InvokeAsync(cmd, []);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     [Fact]
@@ -646,15 +646,15 @@ public class CommandActionTests
             s.AddSingleton(ph);
 
             var loc = Substitute.For<ILocation>();
-            loc.VectraBinaryName.Returns("vectra");
-            loc.DefaultVectraDirectoryName.Returns(Path.GetTempPath());
+            loc.SynentraBinaryName.Returns("synentra");
+            loc.DefaultSynentraDirectoryName.Returns(Path.GetTempPath());
             s.AddSingleton(loc);
         });
 
         var cmd = UninstallCommand.Create(provider);
         await InvokeAsync(cmd, ["--docker"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     // ── UpdateCommand ───────────────────────────────────────────────────────
@@ -673,8 +673,8 @@ public class CommandActionTests
             s.AddSingleton(ver);
 
             var loc = Substitute.For<ILocation>();
-            loc.DefaultVectraBinaryDirectoryName.Returns(Path.GetTempPath());
-            loc.LookupVectraBinaryFilePath(Arg.Any<string>()).Returns(Path.Combine(Path.GetTempPath(), "vectra"));
+            loc.DefaultSynentraBinaryDirectoryName.Returns(Path.GetTempPath());
+            loc.LookupSynentraBinaryFilePath(Arg.Any<string>()).Returns(Path.Combine(Path.GetTempPath(), "synentra"));
             s.AddSingleton(loc);
 
             var ph = Substitute.For<IProcessHandler>();
@@ -685,7 +685,7 @@ public class CommandActionTests
         var cmd = UpdateCommand.Create(provider);
         await InvokeAsync(cmd, []);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("up to date")));
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("up to date")));
     }
 
     [Fact]
@@ -706,16 +706,16 @@ public class CommandActionTests
             s.AddSingleton(ph);
 
             var loc = Substitute.For<ILocation>();
-            loc.DefaultVectraBinaryDirectoryName.Returns(Path.GetTempPath());
-            loc.LookupVectraBinaryFilePath(Arg.Any<string>()).Returns(Path.Combine(Path.GetTempPath(), "vectra"));
-            loc.VectraBinaryName.Returns("vectra");
+            loc.DefaultSynentraBinaryDirectoryName.Returns(Path.GetTempPath());
+            loc.LookupSynentraBinaryFilePath(Arg.Any<string>()).Returns(Path.Combine(Path.GetTempPath(), "synentra"));
+            loc.SynentraBinaryName.Returns("synentra");
             s.AddSingleton(loc);
         });
 
         var cmd = UpdateCommand.Create(provider);
         await InvokeAsync(cmd, []);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     [Fact]
@@ -732,15 +732,15 @@ public class CommandActionTests
             s.AddSingleton(ver);
 
             var loc = Substitute.For<ILocation>();
-            loc.DefaultVectraBinaryDirectoryName.Returns(Path.GetTempPath());
-            loc.LookupVectraBinaryFilePath(Arg.Any<string>()).Returns(Path.Combine(Path.GetTempPath(), "vectra"));
+            loc.DefaultSynentraBinaryDirectoryName.Returns(Path.GetTempPath());
+            loc.LookupSynentraBinaryFilePath(Arg.Any<string>()).Returns(Path.Combine(Path.GetTempPath(), "synentra"));
             s.AddSingleton(loc);
         });
 
         var cmd = UpdateCommand.Create(provider);
         await InvokeAsync(cmd, []);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     [Fact]
@@ -764,16 +764,16 @@ public class CommandActionTests
             s.AddSingleton(ph);
 
             var loc = Substitute.For<ILocation>();
-            loc.DefaultVectraBinaryDirectoryName.Returns(Path.GetTempPath());
-            loc.LookupVectraBinaryFilePath(Arg.Any<string>()).Returns(Path.Combine(Path.GetTempPath(), "vectra"));
-            loc.VectraBinaryName.Returns("vectra");
+            loc.DefaultSynentraBinaryDirectoryName.Returns(Path.GetTempPath());
+            loc.LookupSynentraBinaryFilePath(Arg.Any<string>()).Returns(Path.Combine(Path.GetTempPath(), "synentra"));
+            loc.SynentraBinaryName.Returns("synentra");
             s.AddSingleton(loc);
         });
 
         var cmd = UpdateCommand.Create(provider);
         await InvokeAsync(cmd, []);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     // ── InitCommand extra branches ───────────────────────────────────────────
@@ -800,14 +800,14 @@ public class CommandActionTests
             s.AddSingleton(settings);
 
             var loc = Substitute.For<ILocation>();
-            loc.DefaultVectraDirectoryName.Returns(Path.GetTempPath());
+            loc.DefaultSynentraDirectoryName.Returns(Path.GetTempPath());
             s.AddSingleton(loc);
         });
 
         var cmd = InitCommand.Create(provider);
         await InvokeAsync(cmd, ["--docker"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     [Fact]
@@ -832,14 +832,14 @@ public class CommandActionTests
             s.AddSingleton(settings);
 
             var loc = Substitute.For<ILocation>();
-            loc.DefaultVectraDirectoryName.Returns(Path.GetTempPath());
+            loc.DefaultSynentraDirectoryName.Returns(Path.GetTempPath());
             s.AddSingleton(loc);
         });
 
         var cmd = InitCommand.Create(provider);
         await InvokeAsync(cmd, ["--docker"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     [Fact]
@@ -868,7 +868,7 @@ public class CommandActionTests
             s.AddSingleton(settings);
 
             var loc = Substitute.For<ILocation>();
-            loc.DefaultVectraDirectoryName.Returns(Path.GetTempPath());
+            loc.DefaultSynentraDirectoryName.Returns(Path.GetTempPath());
             s.AddSingleton(loc);
         });
 
@@ -903,14 +903,14 @@ public class CommandActionTests
             s.AddSingleton(settings);
 
             var loc = Substitute.For<ILocation>();
-            loc.DefaultVectraDirectoryName.Returns(Path.GetTempPath());
+            loc.DefaultSynentraDirectoryName.Returns(Path.GetTempPath());
             s.AddSingleton(loc);
         });
 
         var cmd = InitCommand.Create(provider);
         await InvokeAsync(cmd, ["--docker"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     [Fact]
@@ -923,8 +923,8 @@ public class CommandActionTests
             var provider = BuildProvider(s =>
             {
                 var loc = Substitute.For<ILocation>();
-                loc.DefaultVectraBinaryDirectoryName.Returns(tempDir);
-                loc.LookupVectraBinaryFilePath(Arg.Any<string>()).Returns(Path.Combine(tempDir, "vectra"));
+                loc.DefaultSynentraBinaryDirectoryName.Returns(tempDir);
+                loc.LookupSynentraBinaryFilePath(Arg.Any<string>()).Returns(Path.Combine(tempDir, "synentra"));
                 s.AddSingleton(loc);
 
                 var gh = Substitute.For<IGitHubReleaseManager>();
@@ -942,7 +942,7 @@ public class CommandActionTests
             var cmd = InitCommand.Create(provider);
             await InvokeAsync(cmd, []);
 
-            provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+            provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
         }
         finally
         {
@@ -974,14 +974,14 @@ public class CommandActionTests
             s.AddSingleton(gh);
 
             var loc = Substitute.For<ILocation>();
-            loc.DefaultVectraDirectoryName.Returns(Path.GetTempPath());
+            loc.DefaultSynentraDirectoryName.Returns(Path.GetTempPath());
             s.AddSingleton(loc);
         });
 
         var cmd = RunCommand.Create(provider);
         await InvokeAsync(cmd, ["--docker", "--background"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     [Fact]
@@ -1008,14 +1008,14 @@ public class CommandActionTests
             s.AddSingleton(gh);
 
             var loc = Substitute.For<ILocation>();
-            loc.DefaultVectraDirectoryName.Returns(Path.GetTempPath());
+            loc.DefaultSynentraDirectoryName.Returns(Path.GetTempPath());
             s.AddSingleton(loc);
         });
 
         var cmd = RunCommand.Create(provider);
         await InvokeAsync(cmd, ["--docker", "--background"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     [Fact]
@@ -1041,14 +1041,14 @@ public class CommandActionTests
             s.AddSingleton(gh);
 
             var loc = Substitute.For<ILocation>();
-            loc.DefaultVectraDirectoryName.Returns(Path.GetTempPath());
+            loc.DefaultSynentraDirectoryName.Returns(Path.GetTempPath());
             s.AddSingleton(loc);
         });
 
         var cmd = RunCommand.Create(provider);
         await InvokeAsync(cmd, ["--docker", "--background"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     [Fact]
@@ -1075,14 +1075,14 @@ public class CommandActionTests
             s.AddSingleton(gh);
 
             var loc = Substitute.For<ILocation>();
-            loc.DefaultVectraDirectoryName.Returns(Path.GetTempPath());
+            loc.DefaultSynentraDirectoryName.Returns(Path.GetTempPath());
             s.AddSingleton(loc);
         });
 
         var cmd = RunCommand.Create(provider);
         await InvokeAsync(cmd, ["--docker", "--background"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     // ── StopCommand extra branches ───────────────────────────────────────────
@@ -1135,7 +1135,7 @@ public class CommandActionTests
         var cmd = StopCommand.Create(provider);
         await InvokeAsync(cmd, ["--docker"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     // ── UninstallCommand extra branches ──────────────────────────────────────
@@ -1160,7 +1160,7 @@ public class CommandActionTests
         var cmd = UninstallCommand.Create(provider);
         await InvokeAsync(cmd, ["--docker"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     [Fact]
@@ -1183,7 +1183,7 @@ public class CommandActionTests
         var cmd = UninstallCommand.Create(provider);
         await InvokeAsync(cmd, ["--docker"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     [Fact]
@@ -1238,8 +1238,8 @@ public class CommandActionTests
             s.AddSingleton(ph);
 
             var loc = Substitute.For<ILocation>();
-            loc.VectraBinaryName.Returns("vectra");
-            loc.DefaultVectraDirectoryName.Returns(nonExistentDir);
+            loc.SynentraBinaryName.Returns("synentra");
+            loc.DefaultSynentraDirectoryName.Returns(nonExistentDir);
             s.AddSingleton(loc);
 
             var settings = Substitute.For<IAppSettingsService>();
@@ -1250,6 +1250,6 @@ public class CommandActionTests
         var cmd = UninstallCommand.Create(provider);
         await InvokeAsync(cmd, []);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("not found")));
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("not found")));
     }
 }

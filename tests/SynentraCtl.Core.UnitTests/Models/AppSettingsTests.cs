@@ -1,6 +1,6 @@
-using VectraCtl.Core.Models.Configuration;
+using SynentraCtl.Core.Models.Configuration;
 
-namespace VectraCtl.Core.UnitTests.Models;
+namespace SynentraCtl.Core.UnitTests.Models;
 
 public class AppSettingsTests
 {

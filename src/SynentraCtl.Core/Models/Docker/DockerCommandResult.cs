@@ -1,4 +1,4 @@
-namespace VectraCtl.Core.Models.Docker;
+namespace SynentraCtl.Core.Models.Docker;
 
 public class DockerCommandResult
 {

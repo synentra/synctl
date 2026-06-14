@@ -1,4 +1,4 @@
-﻿namespace VectraCtl.Core.Serialization;
+﻿namespace SynentraCtl.Core.Serialization;
 
 public class JsonSerializationConfiguration
 {

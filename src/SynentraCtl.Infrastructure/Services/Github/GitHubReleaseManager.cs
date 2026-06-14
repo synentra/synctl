@@ -1,8 +1,8 @@
-﻿using VectraCtl.Core.Services.Github;
+﻿using SynentraCtl.Core.Services.Github;
 using Octokit;
 using System.Security.Cryptography;
 
-namespace VectraCtl.Infrastructure.Services.Github;
+namespace SynentraCtl.Infrastructure.Services.Github;
 
 public class GitHubReleaseManager : IGitHubReleaseManager
 {

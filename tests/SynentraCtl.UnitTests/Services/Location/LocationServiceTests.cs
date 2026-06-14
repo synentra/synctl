@@ -1,8 +1,8 @@
 using FluentAssertions;
 using System.Runtime.InteropServices;
-using VectraCtl.Services.Location;
+using SynentraCtl.Services.Location;
 
-namespace VectraCtl.UnitTests.Services.Location;
+namespace SynentraCtl.UnitTests.Services.Location;
 
 public class LocationServiceTests
 {
@@ -26,74 +26,74 @@ public class LocationServiceTests
     }
 
     [Fact]
-    public void DefaultVectraDirectoryName_ShouldContainDotVectra()
+    public void DefaultSynentraDirectoryName_ShouldContainDotSynentra()
     {
-        _sut.DefaultVectraDirectoryName.Should().EndWith(".vectra");
+        _sut.DefaultSynentraDirectoryName.Should().EndWith(".synentra");
     }
 
     [Fact]
-    public void DefaultVectraDirectoryName_ShouldBeUnderUserProfile()
+    public void DefaultSynentraDirectoryName_ShouldBeUnderUserProfile()
     {
-        _sut.DefaultVectraDirectoryName.Should()
+        _sut.DefaultSynentraDirectoryName.Should()
             .StartWith(_sut.UserProfilePath);
     }
 
     [Fact]
-    public void DefaultVectraBinaryDirectoryName_ShouldBeUnderVectraDirectory()
+    public void DefaultSynentraBinaryDirectoryName_ShouldBeUnderSynentraDirectory()
     {
-        _sut.DefaultVectraBinaryDirectoryName.Should()
-            .StartWith(_sut.DefaultVectraDirectoryName);
+        _sut.DefaultSynentraBinaryDirectoryName.Should()
+            .StartWith(_sut.DefaultSynentraDirectoryName);
     }
 
     [Fact]
-    public void DefaultVectraBinaryDirectoryName_ShouldContainGateway()
+    public void DefaultSynentraBinaryDirectoryName_ShouldContainGateway()
     {
-        _sut.DefaultVectraBinaryDirectoryName.Should().EndWith("gateway");
+        _sut.DefaultSynentraBinaryDirectoryName.Should().EndWith("gateway");
     }
 
     [Fact]
-    public void VectraBinaryName_ShouldBeVectra()
+    public void SynentraBinaryName_ShouldBeSynentra()
     {
-        _sut.VectraBinaryName.Should().Be("vectra");
+        _sut.SynentraBinaryName.Should().Be("synentra");
     }
 
     [Fact]
-    public void LookupVectraBinaryFilePath_ShouldCombinePathWithBinaryName()
-    {
-        var path = Path.Combine("some", "path");
-        var result = _sut.LookupVectraBinaryFilePath(path);
-
-        result.Should().StartWith(path);
-        result.Should().Contain("vectra");
-    }
-
-    [Fact]
-    public void LookupVectraCtlBinaryFilePath_ShouldCombinePathWithBinaryName()
+    public void LookupSynentraBinaryFilePath_ShouldCombinePathWithBinaryName()
     {
         var path = Path.Combine("some", "path");
-        var result = _sut.LookupVectraCtlBinaryFilePath(path);
+        var result = _sut.LookupSynentraBinaryFilePath(path);
 
         result.Should().StartWith(path);
-        result.Should().Contain("vectractl");
+        result.Should().Contain("synentra");
     }
 
     [Fact]
-    public void LookupVectraBinaryFilePath_OnWindows_ShouldHaveExeExtension()
+    public void LookupSynentraCtlBinaryFilePath_ShouldCombinePathWithBinaryName()
+    {
+        var path = Path.Combine("some", "path");
+        var result = _sut.LookupSynentraCtlBinaryFilePath(path);
+
+        result.Should().StartWith(path);
+        result.Should().Contain("synctl");
+    }
+
+    [Fact]
+    public void LookupSynentraBinaryFilePath_OnWindows_ShouldHaveExeExtension()
     {
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             return;
 
-        var result = _sut.LookupVectraBinaryFilePath("dir");
+        var result = _sut.LookupSynentraBinaryFilePath("dir");
         result.Should().EndWith(".exe");
     }
 
     [Fact]
-    public void LookupVectraBinaryFilePath_OnNonWindows_ShouldNotHaveExeExtension()
+    public void LookupSynentraBinaryFilePath_OnNonWindows_ShouldNotHaveExeExtension()
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             return;
 
-        var result = _sut.LookupVectraBinaryFilePath("dir");
+        var result = _sut.LookupSynentraBinaryFilePath("dir");
         result.Should().NotEndWith(".exe");
     }
 }

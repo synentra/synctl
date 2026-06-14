@@ -1,8 +1,8 @@
 using System.IO.Compression;
 using FluentAssertions;
-using VectraCtl.Infrastructure.Services.Extractor;
+using SynentraCtl.Infrastructure.Services.Extractor;
 
-namespace VectraCtl.Infrastructure.UnitTests.Services.Extractor;
+namespace SynentraCtl.Infrastructure.UnitTests.Services.Extractor;
 
 public class ArchiveExtractorTests : IDisposable
 {

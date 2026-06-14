@@ -1,6 +1,6 @@
-using VectraCtl.Core.Serialization;
+using SynentraCtl.Core.Serialization;
 
-namespace VectraCtl.Core.UnitTests.Serialization;
+namespace SynentraCtl.Core.UnitTests.Serialization;
 
 public class JsonSerializationConfigurationTests
 {

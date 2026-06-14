@@ -2,12 +2,12 @@ using FluentAssertions;
 using NSubstitute;
 using Spectre.Console;
 using Spectre.Console.Rendering;
-using VectraCtl.Core.Serialization;
-using VectraCtl.Core.Services.Logger;
-using VectraCtl.Infrastructure.Serialization;
-using VectraCtl.Services.Logger;
+using SynentraCtl.Core.Serialization;
+using SynentraCtl.Core.Services.Logger;
+using SynentraCtl.Infrastructure.Serialization;
+using SynentraCtl.Services.Logger;
 
-namespace VectraCtl.UnitTests.Services.Logger;
+namespace SynentraCtl.UnitTests.Services.Logger;
 
 public class SpectreConsoleLoggerTests
 {

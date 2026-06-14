@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
-using VectraCtl.Core.Services.Location;
+using SynentraCtl.Core.Services.Location;
 
-namespace VectraCtl.Services.Location;
+namespace SynentraCtl.Services.Location;
 
 public class LocationService : ILocation
 {
@@ -17,17 +17,17 @@ public class LocationService : ILocation
 
     public string UserProfilePath => Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
-    public string DefaultVectraDirectoryName => Path.Combine(UserProfilePath, ".vectra");
+    public string DefaultSynentraDirectoryName => Path.Combine(UserProfilePath, ".synentra");
 
-    public string DefaultVectraBinaryDirectoryName => Path.Combine(DefaultVectraDirectoryName, "gateway");
+    public string DefaultSynentraBinaryDirectoryName => Path.Combine(DefaultSynentraDirectoryName, "gateway");
 
-    public string VectraBinaryName => "vectra";
+    public string SynentraBinaryName => "synentra";
 
-    public string LookupVectraBinaryFilePath(string path) =>
-        Path.Combine(path, AppendExecutableExtension("vectra"));
+    public string LookupSynentraBinaryFilePath(string path) =>
+        Path.Combine(path, AppendExecutableExtension("synentra"));
 
-    public string LookupVectraCtlBinaryFilePath(string path) =>
-        Path.Combine(path, AppendExecutableExtension("vectractl"));
+    public string LookupSynentraCtlBinaryFilePath(string path) =>
+        Path.Combine(path, AppendExecutableExtension("synctl"));
 
     private static string AppendExecutableExtension(string binaryName) =>
         RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? $"{binaryName}.exe" : binaryName;

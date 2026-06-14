@@ -1,13 +1,13 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.CommandLine;
-using VectraCtl.Core.Services.Extractor;
-using VectraCtl.Core.Services.Github;
-using VectraCtl.Core.Services.Location;
-using VectraCtl.Core.Services.Logger;
-using VectraCtl.Core.Services.ProcessHost;
-using VectraCtl.Services.Version;
+using SynentraCtl.Core.Services.Extractor;
+using SynentraCtl.Core.Services.Github;
+using SynentraCtl.Core.Services.Location;
+using SynentraCtl.Core.Services.Logger;
+using SynentraCtl.Core.Services.ProcessHost;
+using SynentraCtl.Services.Version;
 
-namespace VectraCtl.Commands;
+namespace SynentraCtl.Commands;
 
 internal static class UpdateCommand
 {
@@ -23,7 +23,7 @@ internal static class UpdateCommand
             Description = "Stop the running gateway automatically before updating"
         };
 
-        var command = new Command("update", "Update the Vectra gateway binary to a newer version")
+        var command = new Command("update", "Update the Synentra gateway binary to a newer version")
         {
             versionOption,
             forceOption
@@ -31,7 +31,7 @@ internal static class UpdateCommand
 
         command.SetAction(async (parseResult, cancellationToken) =>
         {
-            var logger = serviceProvider.GetRequiredService<IVectraCtlLogger>();
+            var logger = serviceProvider.GetRequiredService<ISynentraCtlLogger>();
             var gitHub = serviceProvider.GetRequiredService<IGitHubReleaseManager>();
             var extractor = serviceProvider.GetRequiredService<IArchiveExtractor>();
             var processHandler = serviceProvider.GetRequiredService<IProcessHandler>();
@@ -43,8 +43,8 @@ internal static class UpdateCommand
 
             try
             {
-                logger.Write("Checking for Vectra gateway updates...");
-                await UpdateVectraAsync(
+                logger.Write("Checking for Synentra gateway updates...");
+                await UpdateSynentraAsync(
                     logger, gitHub, extractor, processHandler, version, location,
                     requestedVersion, force, cancellationToken);
             }
@@ -61,8 +61,8 @@ internal static class UpdateCommand
     // Core update logic
     // -------------------------------------------------------------------------
 
-    private static async Task UpdateVectraAsync(
-        IVectraCtlLogger logger,
+    private static async Task UpdateSynentraAsync(
+        ISynentraCtlLogger logger,
         IGitHubReleaseManager gitHub,
         IArchiveExtractor extractor,
         IProcessHandler processHandler,
@@ -73,33 +73,33 @@ internal static class UpdateCommand
         CancellationToken cancellationToken)
     {
         var latestVersion = await gitHub.GetLatestVersion(
-            GitHubSettings.Organization, GitHubSettings.VectraRepository);
+            GitHubSettings.Organization, GitHubSettings.SynentraRepository);
 
-        var binaryFile = location.LookupVectraBinaryFilePath(
-            Path.Combine(location.DefaultVectraBinaryDirectoryName, "gateway"));
+        var binaryFile = location.LookupSynentraBinaryFilePath(
+            Path.Combine(location.DefaultSynentraBinaryDirectoryName, "gateway"));
 
         var (isUpdateAvailable, targetVersion) = ResolveUpdate(
             version.GetVersionFromPath(binaryFile), requestedVersion, latestVersion);
 
         if (!isUpdateAvailable)
         {
-            logger.Write("Vectra gateway is already up to date.");
+            logger.Write("Synentra gateway is already up to date.");
             return;
         }
 
         logger.Write($"Update available: {targetVersion}. Preparing to install...");
 
-        if (!processHandler.IsStopped(location.VectraBinaryName, ".", force))
+        if (!processHandler.IsStopped(location.SynentraBinaryName, ".", force))
         {
             logger.WriteError(
-                "The Vectra gateway is still running. Stop it first or re-run with --force.");
+                "The Synentra gateway is still running. Stop it first or re-run with --force.");
             return;
         }
 
         await DownloadValidateAndExtractAsync(
             logger, gitHub, extractor, location, targetVersion, cancellationToken);
 
-        logger.Write($"Vectra gateway updated to {targetVersion} successfully.");
+        logger.Write($"Synentra gateway updated to {targetVersion} successfully.");
 
         CommandHelpers.MakeExecutable(binaryFile);
     }
@@ -109,28 +109,28 @@ internal static class UpdateCommand
     // -------------------------------------------------------------------------
 
     private static async Task<bool> DownloadValidateAndExtractAsync(
-        IVectraCtlLogger logger,
+        ISynentraCtlLogger logger,
         IGitHubReleaseManager gitHub,
         IArchiveExtractor extractor,
         ILocation location,
         string version,
         CancellationToken cancellationToken)
     {
-        logger.Write("Downloading Vectra gateway...");
+        logger.Write("Downloading Synentra gateway...");
 
-        var tempArchive = Path.Combine(Path.GetTempPath(), GitHubSettings.VectraArchiveTemporaryFileName);
+        var tempArchive = Path.Combine(Path.GetTempPath(), GitHubSettings.SynentraArchiveTemporaryFileName);
         var archivePath = await gitHub.DownloadAsset(
             GitHubSettings.Organization,
-            GitHubSettings.VectraRepository,
-            GitHubSettings.VectraArchiveFileName,
+            GitHubSettings.SynentraRepository,
+            GitHubSettings.SynentraArchiveFileName,
             tempArchive,
             version);
 
-        var tempHash = Path.Combine(Path.GetTempPath(), GitHubSettings.VectraArchiveTemporaryHashFileName);
+        var tempHash = Path.Combine(Path.GetTempPath(), GitHubSettings.SynentraArchiveTemporaryHashFileName);
         var hashPath = await gitHub.DownloadAsset(
             GitHubSettings.Organization,
-            GitHubSettings.VectraRepository,
-            GitHubSettings.VectraArchiveHashFileName,
+            GitHubSettings.SynentraRepository,
+            GitHubSettings.SynentraArchiveHashFileName,
             tempHash,
             version);
 

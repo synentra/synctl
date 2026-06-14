@@ -1,6 +1,6 @@
-﻿using VectraCtl.Commands;
+﻿using SynentraCtl.Commands;
 
-namespace VectraCtl.ApplicationBuilders;
+namespace SynentraCtl.ApplicationBuilders;
 
 public class CliApplicationBuilder(IServiceProvider serviceProvider) : ICliApplicationBuilder
 {
@@ -9,7 +9,7 @@ public class CliApplicationBuilder(IServiceProvider serviceProvider) : ICliAppli
 
     public async Task<int> RunAsync(string[] args)
     {
-        var rootCommand = VectraCommandLine.Create(_serviceProvider, args);
+        var rootCommand = SynentraCommandLine.Create(_serviceProvider, args);
         return await rootCommand.Parse(args).InvokeAsync();
     }
 }

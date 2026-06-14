@@ -1,4 +1,4 @@
-﻿namespace VectraCtl.Core.Services.Github;
+﻿namespace SynentraCtl.Core.Services.Github;
 
 public interface IGitHubReleaseManager
 {

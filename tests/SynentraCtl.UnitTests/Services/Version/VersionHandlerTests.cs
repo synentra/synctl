@@ -1,8 +1,8 @@
 using FluentAssertions;
 using NSubstitute;
-using VectraCtl.Services.Version;
+using SynentraCtl.Services.Version;
 
-namespace VectraCtl.UnitTests.Services.Version;
+namespace SynentraCtl.UnitTests.Services.Version;
 
 public class VersionHandlerTests
 {
@@ -18,10 +18,10 @@ public class VersionHandlerTests
     }
 
     [Fact]
-    public void VectraCtlVersion_ShouldReturnStringValue()
+    public void SynentraCtlVersion_ShouldReturnStringValue()
     {
         // The assembly may or may not have the attribute; just verify it returns a string
-        _sut.VectraCtlVersion.Should().NotBeNull();
+        _sut.SynentraCtlVersion.Should().NotBeNull();
     }
 
     [Fact]

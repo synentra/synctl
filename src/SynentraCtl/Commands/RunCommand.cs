@@ -2,22 +2,22 @@
 using System.CommandLine;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using VectraCtl.Core.Models.Configuration;
-using VectraCtl.Core.Models.Docker;
-using VectraCtl.Core.Services.Configuration;
-using VectraCtl.Core.Services.Docker;
-using VectraCtl.Core.Services.Github;
-using VectraCtl.Core.Services.Location;
-using VectraCtl.Core.Services.Logger;
+using SynentraCtl.Core.Models.Configuration;
+using SynentraCtl.Core.Models.Docker;
+using SynentraCtl.Core.Services.Configuration;
+using SynentraCtl.Core.Services.Docker;
+using SynentraCtl.Core.Services.Github;
+using SynentraCtl.Core.Services.Location;
+using SynentraCtl.Core.Services.Logger;
 
-namespace VectraCtl.Commands;
+namespace SynentraCtl.Commands;
 
 internal static class RunCommand
 {
     private const int GatewayContainerPort = 7080;
-    private const string DefaultContainerName = "vectra-gateway";
+    private const string DefaultContainerName = "synentra-gateway";
     private const string DefaultContainerDataPath = "/app/data";
-    private const string DefaultImageName = "cortexiumlabs/vectra";
+    private const string DefaultImageName = "synentra/synentra";
 
     public static Command Create(IServiceProvider serviceProvider)
     {
@@ -31,7 +31,7 @@ internal static class RunCommand
             Description = "Start the gateway in the background (detached); do not stream output"
         };
 
-        var command = new Command("run", "Start the Vectra gateway (binary or Docker)")
+        var command = new Command("run", "Start the Synentra gateway (binary or Docker)")
         {
             dockerOption,
             backgroundOption
@@ -39,7 +39,7 @@ internal static class RunCommand
 
         command.SetAction(async (parseResult, cancellationToken) =>
         {
-            var logger = serviceProvider.GetRequiredService<IVectraCtlLogger>();
+            var logger = serviceProvider.GetRequiredService<ISynentraCtlLogger>();
             var location = serviceProvider.GetRequiredService<ILocation>();
             var docker = serviceProvider.GetRequiredService<IDockerService>();
             var appSettings = serviceProvider.GetRequiredService<IAppSettingsService>();
@@ -59,12 +59,12 @@ internal static class RunCommand
                 }
 
                 var settings = await appSettings.LoadAsync(cancellationToken);
-                var binPath = location.DefaultVectraBinaryDirectoryName;
-                var binaryFile = location.LookupVectraBinaryFilePath(binPath);
+                var binPath = location.DefaultSynentraBinaryDirectoryName;
+                var binaryFile = location.LookupSynentraBinaryFilePath(binPath);
 
                 if (settings.DeploymentMode == DeploymentMode.Docker && !File.Exists(binaryFile))
                 {
-                    logger.Write("Vectra is configured for Docker mode. Re-run with --docker or run 'vectractl init' to install the local binary.");
+                    logger.Write("Synentra is configured for Docker mode. Re-run with --docker or run 'synentractl init' to install the local binary.");
                     return;
                 }
 
@@ -84,14 +84,14 @@ internal static class RunCommand
     // -------------------------------------------------------------------------
 
     private static void RunBinary(
-        IVectraCtlLogger logger,
+        ISynentraCtlLogger logger,
         string binPath,
         string binaryFile,
         bool background)
     {
         if (!File.Exists(binaryFile))
         {
-            logger.WriteError($"Vectra gateway binary not found at '{binaryFile}'. Run 'vectractl init' first.");
+            logger.WriteError($"Synentra gateway binary not found at '{binaryFile}'. Run 'synentractl init' first.");
             return;
         }
 
@@ -121,7 +121,7 @@ internal static class RunCommand
         }
         else
         {
-            logger.Write($"Vectra gateway started in the background (PID {process.Id}).");
+            logger.Write($"Synentra gateway started in the background (PID {process.Id}).");
         }
     }
 
@@ -130,7 +130,7 @@ internal static class RunCommand
     // -------------------------------------------------------------------------
 
     private static async Task RunDockerAsync(
-        IVectraCtlLogger logger,
+        ISynentraCtlLogger logger,
         IDockerService docker,
         IAppSettingsService appSettingsService,
         IGitHubReleaseManager gitHub,
@@ -152,7 +152,7 @@ internal static class RunCommand
         var port = ds.Port > 0 ? ds.Port : GatewayContainerPort;
         var imageName = string.IsNullOrWhiteSpace(ds.ImageName) ? DefaultImageName : ds.ImageName;
         var hostDataPath = string.IsNullOrWhiteSpace(ds.HostDataPath)
-            ? Path.Combine(location.DefaultVectraDirectoryName, "data")
+            ? Path.Combine(location.DefaultSynentraDirectoryName, "data")
             : ds.HostDataPath;
         var containerDataPath = string.IsNullOrWhiteSpace(ds.ContainerDataPath)
             ? DefaultContainerDataPath
@@ -170,7 +170,7 @@ internal static class RunCommand
         await PersistDockerSettingsAsync(
             appSettingsService, settings, imageName, tag, containerName, hostDataPath, containerDataPath, port, cancellationToken);
 
-        logger.Write($"Vectra gateway is running in container '{containerName}' (port {port}).");
+        logger.Write($"Synentra gateway is running in container '{containerName}' (port {port}).");
 
         if (!background)
         {
@@ -180,7 +180,7 @@ internal static class RunCommand
     }
 
     private static async Task<string?> ResolveTagAsync(
-        IVectraCtlLogger logger,
+        ISynentraCtlLogger logger,
         IDockerService docker,
         IGitHubReleaseManager gitHub,
         string? savedTag,
@@ -199,7 +199,7 @@ internal static class RunCommand
         var version = await ResolveDockerVersionAsync(gitHub);
         if (string.IsNullOrWhiteSpace(version))
         {
-            logger.WriteError("Failed to resolve the Vectra image version. Specify a tag via 'vectractl init --docker' first.");
+            logger.WriteError("Failed to resolve the Synentra image version. Specify a tag via 'synentractl init --docker' first.");
             return null;
         }
 
@@ -207,7 +207,7 @@ internal static class RunCommand
     }
 
     private static async Task<bool> EnsureContainerRunningAsync(
-        IVectraCtlLogger logger,
+        ISynentraCtlLogger logger,
         IDockerService docker,
         string imageName,
         string tag,
@@ -228,7 +228,7 @@ internal static class RunCommand
     }
 
     private static async Task<bool> CreateAndRunContainerAsync(
-        IVectraCtlLogger logger,
+        ISynentraCtlLogger logger,
         IDockerService docker,
         string imageName,
         string tag,
@@ -270,7 +270,7 @@ internal static class RunCommand
     }
 
     private static async Task<bool> StartExistingContainerAsync(
-        IVectraCtlLogger logger,
+        ISynentraCtlLogger logger,
         IDockerService docker,
         string containerName,
         CancellationToken cancellationToken)
@@ -312,7 +312,7 @@ internal static class RunCommand
 
     private static async Task<string> ResolveDockerVersionAsync(IGitHubReleaseManager gitHub)
     {
-        var version = await gitHub.GetLatestVersion(GitHubSettings.Organization, GitHubSettings.VectraRepository);
+        var version = await gitHub.GetLatestVersion(GitHubSettings.Organization, GitHubSettings.SynentraRepository);
         return NormalizeDockerVersion(version);
     }
 

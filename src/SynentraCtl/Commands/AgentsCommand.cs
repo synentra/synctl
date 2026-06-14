@@ -2,15 +2,15 @@
 using System.CommandLine;
 using Synentra.Client.Abstractions;
 using Synentra.Client.Models.Agents;
-using VectraCtl.Core.Services.Logger;
+using SynentraCtl.Core.Services.Logger;
 
-namespace VectraCtl.Commands;
+namespace SynentraCtl.Commands;
 
 internal static class AgentsCommand
 {
     public static Command Create(IServiceProvider serviceProvider)
     {
-        var command = new Command("agents", "Manage AI agents registered in Vectra");
+        var command = new Command("agents", "Manage AI agents registered in Synentra");
 
         command.Subcommands.Add(CreateListCommand(serviceProvider));
         command.Subcommands.Add(CreateRegisterCommand(serviceProvider));

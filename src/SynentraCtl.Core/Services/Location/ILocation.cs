@@ -1,13 +1,13 @@
-﻿namespace VectraCtl.Core.Services.Location;
+﻿namespace SynentraCtl.Core.Services.Location;
 
 public interface ILocation
 {
     string RootLocation { get; }
     string UserProfilePath { get; }
-    string DefaultVectraDirectoryName { get; }
-    string DefaultVectraBinaryDirectoryName { get; }
-    string VectraBinaryName { get; }
+    string DefaultSynentraDirectoryName { get; }
+    string DefaultSynentraBinaryDirectoryName { get; }
+    string SynentraBinaryName { get; }
 
-    string LookupVectraCtlBinaryFilePath(string path);
-    string LookupVectraBinaryFilePath(string path);
+    string LookupSynentraCtlBinaryFilePath(string path);
+    string LookupSynentraBinaryFilePath(string path);
 }

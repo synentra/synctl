@@ -1,12 +1,12 @@
 ﻿using System.CommandLine;
 
-namespace VectraCtl.Commands;
+namespace SynentraCtl.Commands;
 
-internal static class VectraCommandLine
+internal static class SynentraCommandLine
 {
     public static RootCommand Create(IServiceProvider serviceProvider, string[] args)
     {
-        var rootCommand = new RootCommand("VectraCtl – CLI tool for Vectra (Intent-Aware Governance Gateway for Autonomous AI Agents)");
+        var rootCommand = new RootCommand("SynCtl – CLI tool for Synentra (Intent-Aware Governance Gateway for Autonomous AI Agents)");
 
         rootCommand.Subcommands.Add(AgentsCommand.Create(serviceProvider));
         rootCommand.Subcommands.Add(HitlCommand.Create(serviceProvider));

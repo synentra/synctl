@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace VectraCtl.Services.Version;
+namespace SynentraCtl.Services.Version;
 
 public class VersionInfoProvider : IVersionInfoProvider
 {

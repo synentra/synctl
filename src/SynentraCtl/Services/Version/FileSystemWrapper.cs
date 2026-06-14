@@ -1,4 +1,4 @@
-﻿namespace VectraCtl.Services.Version;
+﻿namespace SynentraCtl.Services.Version;
 
 public class FileSystemWrapper : IFileSystem
 {

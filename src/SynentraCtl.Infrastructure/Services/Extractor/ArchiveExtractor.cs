@@ -1,10 +1,10 @@
-﻿using VectraCtl.Core.Services.Extractor;
+﻿using SynentraCtl.Core.Services.Extractor;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Zip;
 using SharpCompress.Common;
 using SharpCompress.Readers;
 
-namespace VectraCtl.Infrastructure.Services.Extractor;
+namespace SynentraCtl.Infrastructure.Services.Extractor;
 
 public class ArchiveExtractor : IArchiveExtractor
 {

@@ -1,9 +1,9 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using VectraCtl.Core.Exceptions;
-using VectraCtl.Core.Serialization;
+using SynentraCtl.Core.Exceptions;
+using SynentraCtl.Core.Serialization;
 
-namespace VectraCtl.Infrastructure.Serialization;
+namespace SynentraCtl.Infrastructure.Serialization;
 
 public class JsonSerializer : IJsonSerializer
 {
@@ -26,7 +26,7 @@ public class JsonSerializer : IJsonSerializer
         {
             if (input is null)
             {
-                throw new VectraCtlException("Input value can't be empty or null.");
+                throw new SynentraCtlException("Input value can't be empty or null.");
             }
 
             var options = new JsonSerializerOptions
@@ -50,7 +50,7 @@ public class JsonSerializer : IJsonSerializer
         }
         catch (Exception ex)
         {
-            throw new VectraCtlException(ex.Message);
+            throw new SynentraCtlException(ex.Message);
         }
     }
 }

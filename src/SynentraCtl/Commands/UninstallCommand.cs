@@ -1,17 +1,17 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.CommandLine;
-using VectraCtl.Core.Models.Configuration;
-using VectraCtl.Core.Services.Configuration;
-using VectraCtl.Core.Services.Docker;
-using VectraCtl.Core.Services.Location;
-using VectraCtl.Core.Services.Logger;
-using VectraCtl.Core.Services.ProcessHost;
+using SynentraCtl.Core.Models.Configuration;
+using SynentraCtl.Core.Services.Configuration;
+using SynentraCtl.Core.Services.Docker;
+using SynentraCtl.Core.Services.Location;
+using SynentraCtl.Core.Services.Logger;
+using SynentraCtl.Core.Services.ProcessHost;
 
-namespace VectraCtl.Commands;
+namespace SynentraCtl.Commands;
 
 internal static class UninstallCommand
 {
-    private const string DefaultContainerName = "vectra-engine";
+    private const string DefaultContainerName = "synentra-engine";
 
     public static Command Create(IServiceProvider serviceProvider)
     {
@@ -30,7 +30,7 @@ internal static class UninstallCommand
             Description = "Also delete the engine data directory (Docker mode only)"
         };
 
-        var command = new Command("uninstall", "Remove the Vectra engine (binary or Docker)")
+        var command = new Command("uninstall", "Remove the Synentra engine (binary or Docker)")
         {
             dockerOption,
             forceOption,
@@ -39,7 +39,7 @@ internal static class UninstallCommand
 
         command.SetAction(async (parseResult, cancellationToken) =>
         {
-            var logger = serviceProvider.GetRequiredService<IVectraCtlLogger>();
+            var logger = serviceProvider.GetRequiredService<ISynentraCtlLogger>();
             var location = serviceProvider.GetRequiredService<ILocation>();
             var processHandler = serviceProvider.GetRequiredService<IProcessHandler>();
             var docker = serviceProvider.GetRequiredService<IDockerService>();
@@ -51,7 +51,7 @@ internal static class UninstallCommand
 
             try
             {
-                logger.Write("Uninstalling Vectra...");
+                logger.Write("Uninstalling Synentra...");
 
                 if (useDocker)
                 {
@@ -78,7 +78,7 @@ internal static class UninstallCommand
     // -------------------------------------------------------------------------
 
     private static async Task UninstallDockerAsync(
-        IVectraCtlLogger logger,
+        ISynentraCtlLogger logger,
         IDockerService docker,
         IAppSettingsService appSettingsService,
         bool force,
@@ -122,7 +122,7 @@ internal static class UninstallCommand
         settings.Docker = new DockerSettings();
         await appSettingsService.SaveAsync(settings, cancellationToken);
 
-        logger.Write("Vectra engine uninstalled successfully.");
+        logger.Write("Synentra engine uninstalled successfully.");
     }
 
     // -------------------------------------------------------------------------
@@ -130,27 +130,27 @@ internal static class UninstallCommand
     // -------------------------------------------------------------------------
 
     private static void UninstallBinary(
-        IVectraCtlLogger logger,
+        ISynentraCtlLogger logger,
         ILocation location,
         IProcessHandler processHandler,
         bool force)
     {
-        if (processHandler.IsRunning(location.VectraBinaryName, "."))
+        if (processHandler.IsRunning(location.SynentraBinaryName, "."))
         {
             if (force)
             {
-                processHandler.Terminate(location.VectraBinaryName, ".");
-                logger.Write("Vectra engine process terminated.");
+                processHandler.Terminate(location.SynentraBinaryName, ".");
+                logger.Write("Synentra engine process terminated.");
             }
             else
             {
                 logger.WriteError(
-                    "The Vectra engine is still running. Stop it first or re-run with --force.");
+                    "The Synentra engine is still running. Stop it first or re-run with --force.");
                 return;
             }
         }
 
-        var installDir = location.DefaultVectraDirectoryName;
+        var installDir = location.DefaultSynentraDirectoryName;
         if (Directory.Exists(installDir))
         {
             Directory.Delete(installDir, recursive: true);
@@ -158,17 +158,17 @@ internal static class UninstallCommand
         }
         else
         {
-            logger.Write("Vectra engine installation directory not found – nothing to remove.");
+            logger.Write("Synentra engine installation directory not found – nothing to remove.");
         }
 
-        logger.Write("Vectra engine uninstalled successfully.");
+        logger.Write("Synentra engine uninstalled successfully.");
     }
 
     // -------------------------------------------------------------------------
     // Helpers
     // -------------------------------------------------------------------------
 
-    private static void RemoveDataDirectory(IVectraCtlLogger logger, string? hostDataPath)
+    private static void RemoveDataDirectory(ISynentraCtlLogger logger, string? hostDataPath)
     {
         if (string.IsNullOrWhiteSpace(hostDataPath))
             return;

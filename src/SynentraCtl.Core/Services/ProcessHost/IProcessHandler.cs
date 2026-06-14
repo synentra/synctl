@@ -1,4 +1,4 @@
-﻿namespace VectraCtl.Core.Services.ProcessHost;
+﻿namespace SynentraCtl.Core.Services.ProcessHost;
 
 public interface IProcessHandler
 {

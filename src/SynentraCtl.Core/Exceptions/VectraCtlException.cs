@@ -1,7 +1,7 @@
-﻿namespace VectraCtl.Core.Exceptions;
+﻿namespace SynentraCtl.Core.Exceptions;
 
-public class VectraCtlException : Exception
+public class SynentraCtlException : Exception
 {
-    public VectraCtlException(string message) : base(message) { }
-    public VectraCtlException(string message, Exception inner) : base(message, inner) { }
+    public SynentraCtlException(string message) : base(message) { }
+    public SynentraCtlException(string message, Exception inner) : base(message, inner) { }
 }

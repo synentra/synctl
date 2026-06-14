@@ -1,4 +1,4 @@
-﻿namespace VectraCtl.ApplicationBuilders;
+﻿namespace SynentraCtl.ApplicationBuilders;
 
 public interface ICliApplicationBuilder
 {

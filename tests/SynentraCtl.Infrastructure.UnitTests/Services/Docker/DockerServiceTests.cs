@@ -1,9 +1,9 @@
 using FluentAssertions;
 using NSubstitute;
-using VectraCtl.Core.Models.Docker;
-using VectraCtl.Infrastructure.Services.Docker;
+using SynentraCtl.Core.Models.Docker;
+using SynentraCtl.Infrastructure.Services.Docker;
 
-namespace VectraCtl.Infrastructure.UnitTests.Services.Docker;
+namespace SynentraCtl.Infrastructure.UnitTests.Services.Docker;
 
 public class DockerServiceTests : IDisposable
 {

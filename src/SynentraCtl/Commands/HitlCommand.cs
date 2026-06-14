@@ -2,9 +2,9 @@ using Microsoft.Extensions.DependencyInjection;
 using System.CommandLine;
 using Synentra.Client.Abstractions;
 using Synentra.Client.Models.Hitl;
-using VectraCtl.Core.Services.Logger;
+using SynentraCtl.Core.Services.Logger;
 
-namespace VectraCtl.Commands;
+namespace SynentraCtl.Commands;
 
 internal static class HitlCommand
 {

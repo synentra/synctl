@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using FluentAssertions;
-using VectraCtl.Infrastructure.Services.ProcessHost;
+using SynentraCtl.Infrastructure.Services.ProcessHost;
 
-namespace VectraCtl.Infrastructure.UnitTests.Services.ProcessHost;
+namespace SynentraCtl.Infrastructure.UnitTests.Services.ProcessHost;
 
 public class ProcessWrapperTests
 {

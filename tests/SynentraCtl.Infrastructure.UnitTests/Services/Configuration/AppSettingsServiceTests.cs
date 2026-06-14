@@ -1,11 +1,11 @@
 using FluentAssertions;
 using NSubstitute;
-using VectraCtl.Core.Models.Configuration;
-using VectraCtl.Core.Serialization;
-using VectraCtl.Core.Services.Location;
-using VectraCtl.Infrastructure.Services.Configuration;
+using SynentraCtl.Core.Models.Configuration;
+using SynentraCtl.Core.Serialization;
+using SynentraCtl.Core.Services.Location;
+using SynentraCtl.Infrastructure.Services.Configuration;
 
-namespace VectraCtl.Infrastructure.UnitTests.Services.Configuration;
+namespace SynentraCtl.Infrastructure.UnitTests.Services.Configuration;
 
 public class AppSettingsServiceTests : IDisposable
 {
@@ -20,7 +20,7 @@ public class AppSettingsServiceTests : IDisposable
         _tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
         Directory.CreateDirectory(_tempDir);
         _location.RootLocation.Returns(_tempDir);
-        _location.DefaultVectraDirectoryName.Returns(".vectra");
+        _location.DefaultSynentraDirectoryName.Returns(".synentra");
         _sut = new AppSettingsService(_location, _serializer, _deserializer);
     }
 
@@ -170,8 +170,8 @@ public class AppSettingsServiceTests : IDisposable
     {
         settings.DeploymentMode.Should().Be(DeploymentMode.Binary);
         settings.Docker.Should().NotBeNull();
-        settings.Docker.ImageName.Should().Be("cortexiumlabs/vectra");
-        settings.Docker.ContainerName.Should().Be("vectra-gateway");
+        settings.Docker.ImageName.Should().Be("synentra/synentra");
+        settings.Docker.ContainerName.Should().Be("synentra-gateway");
         settings.Docker.Port.Should().Be(7080);
         settings.Binary.Should().NotBeNull();
     }

@@ -1,6 +1,6 @@
-﻿namespace VectraCtl.Core.Services.Logger;
+﻿namespace SynentraCtl.Core.Services.Logger;
 
-public interface IVectraCtlLogger
+public interface ISynentraCtlLogger
 {
     void WriteError(string message);
     void WriteError(object data);

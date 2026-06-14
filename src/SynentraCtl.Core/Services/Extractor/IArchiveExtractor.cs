@@ -1,4 +1,4 @@
-﻿namespace VectraCtl.Core.Services.Extractor;
+﻿namespace SynentraCtl.Core.Services.Extractor;
 
 public interface IArchiveExtractor
 {

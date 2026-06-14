@@ -1,6 +1,6 @@
-using VectraCtl.Core.Models.Docker;
+using SynentraCtl.Core.Models.Docker;
 
-namespace VectraCtl.Core.UnitTests.Models;
+namespace SynentraCtl.Core.UnitTests.Models;
 
 public class DockerRunOptionsTests
 {
@@ -97,9 +97,9 @@ public class DockerRunOptionsTests
     {
         var options = new DockerRunOptions
         {
-            ImageName = "cortexiumlabs/vectra",
+            ImageName = "synentra/synentra",
             Tag = "1.0.0",
-            ContainerName = "vectra",
+            ContainerName = "synentra",
             HostPort = 9090,
             ContainerPort = 7080,
             HostDataPath = "/data/host",
@@ -108,9 +108,9 @@ public class DockerRunOptionsTests
             AdditionalArguments = "--env DEBUG=true"
         };
 
-        options.ImageName.Should().Be("cortexiumlabs/vectra");
+        options.ImageName.Should().Be("synentra/synentra");
         options.Tag.Should().Be("1.0.0");
-        options.ContainerName.Should().Be("vectra");
+        options.ContainerName.Should().Be("synentra");
         options.HostPort.Should().Be(9090);
         options.ContainerPort.Should().Be(7080);
         options.HostDataPath.Should().Be("/data/host");

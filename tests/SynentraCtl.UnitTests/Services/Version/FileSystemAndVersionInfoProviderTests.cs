@@ -1,7 +1,7 @@
 using FluentAssertions;
-using VectraCtl.Services.Version;
+using SynentraCtl.Services.Version;
 
-namespace VectraCtl.UnitTests.Services.Version;
+namespace SynentraCtl.UnitTests.Services.Version;
 
 public class FileSystemWrapperTests
 {

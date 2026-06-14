@@ -1,27 +1,27 @@
 using FluentAssertions;
-using VectraCtl.Core.Exceptions;
-using VectraCtl.Core.Models.Configuration;
-using VectraCtl.Core.Models.Docker;
-using VectraCtl.Core.Services.Github;
+using SynentraCtl.Core.Exceptions;
+using SynentraCtl.Core.Models.Configuration;
+using SynentraCtl.Core.Models.Docker;
+using SynentraCtl.Core.Services.Github;
 
-namespace VectraCtl.Infrastructure.UnitTests.Core;
+namespace SynentraCtl.Infrastructure.UnitTests.Core;
 
 public class CoreModelsTests
 {
-    // --- VectraCtlException ---
+    // --- SynentraCtlException ---
 
     [Fact]
-    public void VectraCtlException_MessageConstructor_SetsMessage()
+    public void SynentraCtlException_MessageConstructor_SetsMessage()
     {
-        var ex = new VectraCtlException("something went wrong");
+        var ex = new SynentraCtlException("something went wrong");
         ex.Message.Should().Be("something went wrong");
     }
 
     [Fact]
-    public void VectraCtlException_InnerExceptionConstructor_SetsMessageAndInner()
+    public void SynentraCtlException_InnerExceptionConstructor_SetsMessageAndInner()
     {
         var inner = new InvalidOperationException("inner");
-        var ex = new VectraCtlException("outer", inner);
+        var ex = new SynentraCtlException("outer", inner);
         ex.Message.Should().Be("outer");
         ex.InnerException.Should().BeSameAs(inner);
     }
@@ -105,47 +105,47 @@ public class CoreModelsTests
     [Fact]
     public void GitHubSettings_Constants_HaveExpectedValues()
     {
-        GitHubSettings.Organization.Should().Be("cortexiumlabs");
-        GitHubSettings.VectraRepository.Should().Be("vectra");
-        GitHubSettings.VectraCtlRepository.Should().Be("vectractl");
+        GitHubSettings.Organization.Should().Be("synentra");
+        GitHubSettings.SynentraRepository.Should().Be("synentra");
+        GitHubSettings.SynentraCtlRepository.Should().Be("synctl");
     }
 
     [Fact]
-    public void GitHubSettings_VectraArchiveFileName_IsNotEmpty()
+    public void GitHubSettings_SynentraArchiveFileName_IsNotEmpty()
     {
-        GitHubSettings.VectraArchiveFileName.Should().NotBeNullOrEmpty();
-        GitHubSettings.VectraArchiveFileName.Should().StartWith("vectra-");
+        GitHubSettings.SynentraArchiveFileName.Should().NotBeNullOrEmpty();
+        GitHubSettings.SynentraArchiveFileName.Should().StartWith("synentra-");
     }
 
     [Fact]
-    public void GitHubSettings_VectraArchiveHashFileName_EndsWithSha256()
+    public void GitHubSettings_SynentraArchiveHashFileName_EndsWithSha256()
     {
-        GitHubSettings.VectraArchiveHashFileName.Should().EndWith(".sha256");
+        GitHubSettings.SynentraArchiveHashFileName.Should().EndWith(".sha256");
     }
 
     [Fact]
-    public void GitHubSettings_VectraCtlArchiveFileName_StartsWithVectractl()
+    public void GitHubSettings_SynentraCtlArchiveFileName_StartsWithSynCtl()
     {
-        GitHubSettings.VectraCtlArchiveFileName.Should().StartWith("vectractl-");
+        GitHubSettings.SynentraCtlArchiveFileName.Should().StartWith("synctl-");
     }
 
     [Fact]
-    public void GitHubSettings_VectraCtlArchiveHashFileName_EndsWithSha256()
+    public void GitHubSettings_SynentraCtlArchiveHashFileName_EndsWithSha256()
     {
-        GitHubSettings.VectraCtlArchiveHashFileName.Should().EndWith(".sha256");
+        GitHubSettings.SynentraCtlArchiveHashFileName.Should().EndWith(".sha256");
     }
 
     [Fact]
     public void GitHubSettings_TemporaryFileNames_AreUnique()
     {
-        var name1 = GitHubSettings.VectraArchiveTemporaryFileName;
-        var name2 = GitHubSettings.VectraArchiveTemporaryFileName;
+        var name1 = GitHubSettings.SynentraArchiveTemporaryFileName;
+        var name2 = GitHubSettings.SynentraArchiveTemporaryFileName;
         name1.Should().NotBe(name2);
     }
 
     [Fact]
-    public void GitHubSettings_VectraArchiveTemporaryHashFileName_EndsWithSha256()
+    public void GitHubSettings_SynentraArchiveTemporaryHashFileName_EndsWithSha256()
     {
-        GitHubSettings.VectraArchiveTemporaryHashFileName.Should().EndWith(".sha256");
+        GitHubSettings.SynentraArchiveTemporaryHashFileName.Should().EndWith(".sha256");
     }
 }

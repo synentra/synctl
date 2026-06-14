@@ -1,17 +1,17 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.CommandLine;
 using System.Diagnostics;
-using VectraCtl.Core.Models.Configuration;
-using VectraCtl.Core.Services.Configuration;
-using VectraCtl.Core.Services.Docker;
-using VectraCtl.Core.Services.Location;
-using VectraCtl.Core.Services.Logger;
+using SynentraCtl.Core.Models.Configuration;
+using SynentraCtl.Core.Services.Configuration;
+using SynentraCtl.Core.Services.Docker;
+using SynentraCtl.Core.Services.Location;
+using SynentraCtl.Core.Services.Logger;
 
-namespace VectraCtl.Commands;
+namespace SynentraCtl.Commands;
 
 internal static class StopCommand
 {
-    private const string DefaultContainerName = "vectra-gateway";
+    private const string DefaultContainerName = "synentra-gateway";
 
     public static Command Create(IServiceProvider serviceProvider)
     {
@@ -20,14 +20,14 @@ internal static class StopCommand
             Description = "Stop the Docker-based gateway container instead of the local binary"
         };
 
-        var command = new Command("stop", "Stop the running Vectra gateway (binary or Docker)")
+        var command = new Command("stop", "Stop the running Synentra gateway (binary or Docker)")
         {
             dockerOption
         };
 
         command.SetAction(async (parseResult, cancellationToken) =>
         {
-            var logger = serviceProvider.GetRequiredService<IVectraCtlLogger>();
+            var logger = serviceProvider.GetRequiredService<ISynentraCtlLogger>();
             var location = serviceProvider.GetRequiredService<ILocation>();
             var docker = serviceProvider.GetRequiredService<IDockerService>();
             var appSettings = serviceProvider.GetRequiredService<IAppSettingsService>();
@@ -50,7 +50,7 @@ internal static class StopCommand
                     return;
                 }
 
-                StopBinary(logger, location.VectraBinaryName);
+                StopBinary(logger, location.SynentraBinaryName);
             }
             catch (Exception ex)
             {
@@ -66,7 +66,7 @@ internal static class StopCommand
     // -------------------------------------------------------------------------
 
     private static async Task StopDockerAsync(
-        IVectraCtlLogger logger,
+        ISynentraCtlLogger logger,
         IDockerService docker,
         IAppSettingsService appSettingsService,
         CancellationToken cancellationToken)
@@ -104,7 +104,7 @@ internal static class StopCommand
     // Binary stop
     // -------------------------------------------------------------------------
 
-    private static void StopBinary(IVectraCtlLogger logger, string processName)
+    private static void StopBinary(ISynentraCtlLogger logger, string processName)
     {
         var processes = Process.GetProcessesByName(processName);
 
@@ -133,6 +133,6 @@ internal static class StopCommand
         }
 
         if (killed > 0)
-            logger.Write($"Vectra gateway stopped ({killed} process{(killed == 1 ? "" : "es")} terminated).");
+            logger.Write($"Synentra gateway stopped ({killed} process{(killed == 1 ? "" : "es")} terminated).");
     }
 }

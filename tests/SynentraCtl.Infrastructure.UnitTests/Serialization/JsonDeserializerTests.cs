@@ -1,11 +1,11 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using FluentAssertions;
-using VectraCtl.Core.Exceptions;
-using VectraCtl.Core.Serialization;
-using VectraCtl.Infrastructure.Serialization;
+using SynentraCtl.Core.Exceptions;
+using SynentraCtl.Core.Serialization;
+using SynentraCtl.Infrastructure.Serialization;
 
-namespace VectraCtl.Infrastructure.UnitTests.Serialization;
+namespace SynentraCtl.Infrastructure.UnitTests.Serialization;
 
 public class JsonDeserializerTests
 {
@@ -14,24 +14,24 @@ public class JsonDeserializerTests
     // --- Deserialize<T>(string?) ---
 
     [Fact]
-    public void Deserialize_WithNull_ThrowsVectraCtlException()
+    public void Deserialize_WithNull_ThrowsSynentraCtlException()
     {
         var act = () => _sut.Deserialize<SampleModel>(null);
-        act.Should().Throw<VectraCtlException>().WithMessage("*empty or null*");
+        act.Should().Throw<SynentraCtlException>().WithMessage("*empty or null*");
     }
 
     [Fact]
-    public void Deserialize_WithEmptyString_ThrowsVectraCtlException()
+    public void Deserialize_WithEmptyString_ThrowsSynentraCtlException()
     {
         var act = () => _sut.Deserialize<SampleModel>(string.Empty);
-        act.Should().Throw<VectraCtlException>();
+        act.Should().Throw<SynentraCtlException>();
     }
 
     [Fact]
-    public void Deserialize_WithWhiteSpace_ThrowsVectraCtlException()
+    public void Deserialize_WithWhiteSpace_ThrowsSynentraCtlException()
     {
         var act = () => _sut.Deserialize<SampleModel>("   ");
-        act.Should().Throw<VectraCtlException>();
+        act.Should().Throw<SynentraCtlException>();
     }
 
     [Fact]
@@ -52,10 +52,10 @@ public class JsonDeserializerTests
     }
 
     [Fact]
-    public void Deserialize_InvalidJson_ThrowsVectraCtlException()
+    public void Deserialize_InvalidJson_ThrowsSynentraCtlException()
     {
         var act = () => _sut.Deserialize<SampleModel>("not valid json");
-        act.Should().Throw<VectraCtlException>();
+        act.Should().Throw<SynentraCtlException>();
     }
 
     // --- Deserialize<T>(string?, JsonSerializationConfiguration) ---
@@ -70,18 +70,18 @@ public class JsonDeserializerTests
     }
 
     [Fact]
-    public void Deserialize_WithNullInput_AndConfiguration_ThrowsVectraCtlException()
+    public void Deserialize_WithNullInput_AndConfiguration_ThrowsSynentraCtlException()
     {
         var act = () => _sut.Deserialize<SampleModel>(null, new JsonSerializationConfiguration());
-        act.Should().Throw<VectraCtlException>();
+        act.Should().Throw<SynentraCtlException>();
     }
 
     [Fact]
-    public void Deserialize_DeserializingToWrongType_ThrowsVectraCtlException()
+    public void Deserialize_DeserializingToWrongType_ThrowsSynentraCtlException()
     {
         var json = "\"just a string\"";
         var act = () => _sut.Deserialize<SampleModel>(json);
-        act.Should().Throw<VectraCtlException>();
+        act.Should().Throw<SynentraCtlException>();
     }
 
     [Fact]

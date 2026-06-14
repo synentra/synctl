@@ -1,8 +1,8 @@
 using FluentAssertions;
 using System.Text.Json;
-using VectraCtl.Services.Logger;
+using SynentraCtl.Services.Logger;
 
-namespace VectraCtl.UnitTests.Services.Logger;
+namespace SynentraCtl.UnitTests.Services.Logger;
 
 public class ObjectToInferredTypesConverterTests
 {

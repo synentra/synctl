@@ -1,15 +1,15 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Octokit;
-using VectraCtl.Core.Services.Configuration;
-using VectraCtl.Core.Services.Docker;
-using VectraCtl.Core.Services.Extractor;
-using VectraCtl.Core.Services.Github;
-using VectraCtl.Core.Services.ProcessHost;
-using VectraCtl.Infrastructure.Extensions;
-using VectraCtl.Infrastructure.Services.ProcessHost;
+using SynentraCtl.Core.Services.Configuration;
+using SynentraCtl.Core.Services.Docker;
+using SynentraCtl.Core.Services.Extractor;
+using SynentraCtl.Core.Services.Github;
+using SynentraCtl.Core.Services.ProcessHost;
+using SynentraCtl.Infrastructure.Extensions;
+using SynentraCtl.Infrastructure.Services.ProcessHost;
 
-namespace VectraCtl.Infrastructure.UnitTests.Extensions;
+namespace SynentraCtl.Infrastructure.UnitTests.Extensions;
 
 public class ServiceCollectionExtensionsTests
 {
@@ -59,7 +59,7 @@ public class ServiceCollectionExtensionsTests
         var services = new ServiceCollection();
         services.AddInfrastructure();
 
-        // IProcessHandler depends on IVectraCtlLogger which is not registered;
+        // IProcessHandler depends on ISynentraCtlLogger which is not registered;
         // but we can verify the registration descriptor exists
         var descriptor = services.FirstOrDefault(d => d.ServiceType == typeof(IProcessHandler));
         descriptor.Should().NotBeNull();

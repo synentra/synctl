@@ -1,13 +1,13 @@
 using FluentAssertions;
 using NSubstitute;
-using VectraCtl.Core.Services.Logger;
-using VectraCtl.Infrastructure.Services.ProcessHost;
+using SynentraCtl.Core.Services.Logger;
+using SynentraCtl.Infrastructure.Services.ProcessHost;
 
-namespace VectraCtl.Infrastructure.UnitTests.Services.ProcessHost;
+namespace SynentraCtl.Infrastructure.UnitTests.Services.ProcessHost;
 
 public class ProcessHandlerTests
 {
-    private readonly IVectraCtlLogger _logger = Substitute.For<IVectraCtlLogger>();
+    private readonly ISynentraCtlLogger _logger = Substitute.For<ISynentraCtlLogger>();
     private readonly IProcessProvider _processProvider = Substitute.For<IProcessProvider>();
     private readonly ProcessHandler _sut;
 

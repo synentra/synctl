@@ -1,4 +1,4 @@
-﻿namespace VectraCtl.Core.Services.Logger;
+﻿namespace SynentraCtl.Core.Services.Logger;
 
 public enum OutputType
 {

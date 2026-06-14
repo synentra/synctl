@@ -1,14 +1,14 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
-using VectraCtl.ApplicationBuilders;
-using VectraCtl.Core.Serialization;
-using VectraCtl.Core.Services.Location;
-using VectraCtl.Core.Services.Logger;
-using VectraCtl.Extensions;
-using VectraCtl.Services.Version;
+using SynentraCtl.ApplicationBuilders;
+using SynentraCtl.Core.Serialization;
+using SynentraCtl.Core.Services.Location;
+using SynentraCtl.Core.Services.Logger;
+using SynentraCtl.Extensions;
+using SynentraCtl.Services.Version;
 
-namespace VectraCtl.UnitTests.Extensions;
+namespace SynentraCtl.UnitTests.Extensions;
 
 public class AppServiceCollectionExtensionsTests
 {
@@ -40,7 +40,7 @@ public class AppServiceCollectionExtensionsTests
         var types = services.Select(d => d.ServiceType).ToList();
 
         types.Should().Contain(typeof(ILocation));
-        types.Should().Contain(typeof(IVectraCtlLogger));
+        types.Should().Contain(typeof(ISynentraCtlLogger));
         types.Should().Contain(typeof(IJsonSerializer));
         types.Should().Contain(typeof(IJsonDeserializer));
         types.Should().Contain(typeof(ICliApplicationBuilder));

@@ -1,7 +1,7 @@
-using VectraCtl.Core.Models.Docker;
-using VectraCtl.Core.Services.Docker;
+using SynentraCtl.Core.Models.Docker;
+using SynentraCtl.Core.Services.Docker;
 
-namespace VectraCtl.Infrastructure.Services.Docker;
+namespace SynentraCtl.Infrastructure.Services.Docker;
 
 public class DockerService : IDockerService
 {

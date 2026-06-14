@@ -1,6 +1,6 @@
-using VectraCtl.Core.Models.Docker;
+using SynentraCtl.Core.Models.Docker;
 
-namespace VectraCtl.Core.UnitTests.Models;
+namespace SynentraCtl.Core.UnitTests.Models;
 
 public class DockerCommandResultTests
 {

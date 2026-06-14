@@ -1,15 +1,15 @@
 using System.Diagnostics;
 using System.Text;
-using VectraCtl.Core.Models.Docker;
-using VectraCtl.Core.Services.Logger;
+using SynentraCtl.Core.Models.Docker;
+using SynentraCtl.Core.Services.Logger;
 
-namespace VectraCtl.Infrastructure.Services.Docker;
+namespace SynentraCtl.Infrastructure.Services.Docker;
 
 public class SystemDockerProcessRunner : IDockerProcessRunner
 {
-    private readonly IVectraCtlLogger _logger;
+    private readonly ISynentraCtlLogger _logger;
 
-    public SystemDockerProcessRunner(IVectraCtlLogger logger)
+    public SystemDockerProcessRunner(ISynentraCtlLogger logger)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }

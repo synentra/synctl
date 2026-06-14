@@ -8,10 +8,10 @@ using Synentra.Client.Models.Agents;
 using Synentra.Client.Models.Hitl;
 using Synentra.Client.Models.Policies;
 using Synentra.Client.Models.Tokens;
-using VectraCtl.Commands;
-using VectraCtl.Core.Services.Logger;
+using SynentraCtl.Commands;
+using SynentraCtl.Core.Services.Logger;
 
-namespace VectraCtl.UnitTests.Commands;
+namespace SynentraCtl.UnitTests.Commands;
 
 /// <summary>
 /// Covers action handlers in the API-client commands:
@@ -24,7 +24,7 @@ public class ApiCommandActionTests
     private static ServiceProvider BuildProvider(Action<ServiceCollection>? configure = null)
     {
         var services = new ServiceCollection();
-        services.AddSingleton(Substitute.For<IVectraCtlLogger>());
+        services.AddSingleton(Substitute.For<ISynentraCtlLogger>());
         services.AddSingleton(Substitute.For<ISynentraClient>());
         configure?.Invoke(services);
         return services.BuildServiceProvider();
@@ -51,7 +51,7 @@ public class ApiCommandActionTests
         var cmd = AgentsCommand.Create(provider);
         await InvokeAsync(cmd, ["list"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().Write(Arg.Any<object?>(), Arg.Any<OutputType>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().Write(Arg.Any<object?>(), Arg.Any<OutputType>());
     }
 
     [Fact]
@@ -70,7 +70,7 @@ public class ApiCommandActionTests
         var cmd = AgentsCommand.Create(provider);
         await InvokeAsync(cmd, ["list"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     [Fact]
@@ -89,7 +89,7 @@ public class ApiCommandActionTests
         var cmd = AgentsCommand.Create(provider);
         await InvokeAsync(cmd, ["register", "--name", "TestAgent", "--owner", "team1", "--secret", "secret123"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().Write(Arg.Any<object?>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().Write(Arg.Any<object?>());
     }
 
     [Fact]
@@ -108,7 +108,7 @@ public class ApiCommandActionTests
         var cmd = AgentsCommand.Create(provider);
         await InvokeAsync(cmd, ["register", "--name", "A", "--owner", "O", "--secret", "S"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     [Fact]
@@ -127,7 +127,7 @@ public class ApiCommandActionTests
         var cmd = AgentsCommand.Create(provider);
         await InvokeAsync(cmd, ["assign-policy", "--agent-id", Guid.NewGuid().ToString(), "--policy", "default"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("Policy assigned")));
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("Policy assigned")));
     }
 
     [Fact]
@@ -146,7 +146,7 @@ public class ApiCommandActionTests
         var cmd = AgentsCommand.Create(provider);
         await InvokeAsync(cmd, ["assign-policy", "--agent-id", Guid.NewGuid().ToString(), "--policy", "default"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     [Fact]
@@ -165,7 +165,7 @@ public class ApiCommandActionTests
         var cmd = AgentsCommand.Create(provider);
         await InvokeAsync(cmd, ["delete", "--agent-id", Guid.NewGuid().ToString()]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("deleted")));
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("deleted")));
     }
 
     [Fact]
@@ -184,7 +184,7 @@ public class ApiCommandActionTests
         var cmd = AgentsCommand.Create(provider);
         await InvokeAsync(cmd, ["delete", "--agent-id", Guid.NewGuid().ToString()]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     [Fact]
@@ -203,7 +203,7 @@ public class ApiCommandActionTests
         var cmd = AgentsCommand.Create(provider);
         await InvokeAsync(cmd, ["lift-quarantine", "--agent-id", Guid.NewGuid().ToString()]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("Quarantine lifted")));
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("Quarantine lifted")));
     }
 
     [Fact]
@@ -222,7 +222,7 @@ public class ApiCommandActionTests
         var cmd = AgentsCommand.Create(provider);
         await InvokeAsync(cmd, ["lift-quarantine", "--agent-id", Guid.NewGuid().ToString()]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     // ── HitlCommand ──────────────────────────────────────────────────────────
@@ -243,7 +243,7 @@ public class ApiCommandActionTests
         var cmd = HitlCommand.Create(provider);
         await InvokeAsync(cmd, ["list"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().Write(Arg.Any<object?>(), Arg.Any<OutputType>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().Write(Arg.Any<object?>(), Arg.Any<OutputType>());
     }
 
     [Fact]
@@ -262,7 +262,7 @@ public class ApiCommandActionTests
         var cmd = HitlCommand.Create(provider);
         await InvokeAsync(cmd, ["list"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     [Fact]
@@ -281,7 +281,7 @@ public class ApiCommandActionTests
         var cmd = HitlCommand.Create(provider);
         await InvokeAsync(cmd, ["status", "--id", "req-1"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().Write(Arg.Any<object?>(), Arg.Any<OutputType>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().Write(Arg.Any<object?>(), Arg.Any<OutputType>());
     }
 
     [Fact]
@@ -300,7 +300,7 @@ public class ApiCommandActionTests
         var cmd = HitlCommand.Create(provider);
         await InvokeAsync(cmd, ["status", "--id", "req-1"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     [Fact]
@@ -319,7 +319,7 @@ public class ApiCommandActionTests
         var cmd = HitlCommand.Create(provider);
         await InvokeAsync(cmd, ["approve", "--id", "req-1"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("approved")));
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("approved")));
     }
 
     [Fact]
@@ -338,7 +338,7 @@ public class ApiCommandActionTests
         var cmd = HitlCommand.Create(provider);
         await InvokeAsync(cmd, ["approve", "--id", "req-1"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     [Fact]
@@ -357,7 +357,7 @@ public class ApiCommandActionTests
         var cmd = HitlCommand.Create(provider);
         await InvokeAsync(cmd, ["deny", "--id", "req-1"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("denied")));
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("denied")));
     }
 
     [Fact]
@@ -376,7 +376,7 @@ public class ApiCommandActionTests
         var cmd = HitlCommand.Create(provider);
         await InvokeAsync(cmd, ["deny", "--id", "req-1"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     // ── PoliciesCommand ──────────────────────────────────────────────────────
@@ -397,7 +397,7 @@ public class ApiCommandActionTests
         var cmd = PoliciesCommand.Create(provider);
         await InvokeAsync(cmd, ["list"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().Write(Arg.Any<object?>(), Arg.Any<OutputType>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().Write(Arg.Any<object?>(), Arg.Any<OutputType>());
     }
 
     [Fact]
@@ -416,7 +416,7 @@ public class ApiCommandActionTests
         var cmd = PoliciesCommand.Create(provider);
         await InvokeAsync(cmd, ["list"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     [Fact]
@@ -435,7 +435,7 @@ public class ApiCommandActionTests
         var cmd = PoliciesCommand.Create(provider);
         await InvokeAsync(cmd, ["details", "--name", "my-policy"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().Write(Arg.Any<object?>(), Arg.Any<OutputType>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().Write(Arg.Any<object?>(), Arg.Any<OutputType>());
     }
 
     [Fact]
@@ -454,7 +454,7 @@ public class ApiCommandActionTests
         var cmd = PoliciesCommand.Create(provider);
         await InvokeAsync(cmd, ["details", "--name", "missing"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 
     // ── TokenCommand ─────────────────────────────────────────────────────────
@@ -475,7 +475,7 @@ public class ApiCommandActionTests
         var cmd = TokenCommand.Create(provider);
         await InvokeAsync(cmd, ["--agent-id", Guid.NewGuid().ToString(), "--secret", "my-secret"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().Write(Arg.Any<object?>(), Arg.Any<OutputType>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().Write(Arg.Any<object?>(), Arg.Any<OutputType>());
     }
 
     [Fact]
@@ -494,6 +494,6 @@ public class ApiCommandActionTests
         var cmd = TokenCommand.Create(provider);
         await InvokeAsync(cmd, ["--agent-id", Guid.NewGuid().ToString(), "--secret", "bad-secret"]);
 
-        provider.GetRequiredService<IVectraCtlLogger>().Received().WriteError(Arg.Any<string>());
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
 }

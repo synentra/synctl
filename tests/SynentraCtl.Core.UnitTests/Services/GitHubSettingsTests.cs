@@ -1,114 +1,114 @@
 using System.Runtime.InteropServices;
-using VectraCtl.Core.Services.Github;
-using VectraCtl.Core.Services.Logger;
+using SynentraCtl.Core.Services.Github;
+using SynentraCtl.Core.Services.Logger;
 
-namespace VectraCtl.Core.UnitTests.Services;
+namespace SynentraCtl.Core.UnitTests.Services;
 
 public class GitHubSettingsTests
 {
     [Fact]
-    public void GitHubSettings_Organization_IsCortexiumlabs()
+    public void GitHubSettings_Organization_IsSynentra()
     {
-        GitHubSettings.Organization.Should().Be("cortexiumlabs");
+        GitHubSettings.Organization.Should().Be("synentra");
     }
 
     [Fact]
-    public void GitHubSettings_VectraRepository_IsVectra()
+    public void GitHubSettings_SynentraRepository_IsSynentra()
     {
-        GitHubSettings.VectraRepository.Should().Be("vectra");
+        GitHubSettings.SynentraRepository.Should().Be("synentra");
     }
 
     [Fact]
-    public void GitHubSettings_VectraCtlRepository_IsVectractl()
+    public void GitHubSettings_SynentraCtlRepository_IsSynentraCtl()
     {
-        GitHubSettings.VectraCtlRepository.Should().Be("vectractl");
+        GitHubSettings.SynentraCtlRepository.Should().Be("synctl");
     }
 
     [Fact]
-    public void GitHubSettings_VectraArchiveFileName_StartsWithVectraPrefix()
+    public void GitHubSettings_SynentraArchiveFileName_StartsWithSynentraPrefix()
     {
-        GitHubSettings.VectraArchiveFileName.Should().StartWith("vectra-");
+        GitHubSettings.SynentraArchiveFileName.Should().StartWith("synentra-");
     }
 
     [Fact]
-    public void GitHubSettings_VectraArchiveFileName_IsLowerCase()
+    public void GitHubSettings_SynentraArchiveFileName_IsLowerCase()
     {
-        GitHubSettings.VectraArchiveFileName.Should().Be(GitHubSettings.VectraArchiveFileName.ToLower());
+        GitHubSettings.SynentraArchiveFileName.Should().Be(GitHubSettings.SynentraArchiveFileName.ToLower());
     }
 
     [Fact]
-    public void GitHubSettings_VectraArchiveHashFileName_StartsWithVectraPrefix()
+    public void GitHubSettings_SynentraArchiveHashFileName_StartsWithSynentraPrefix()
     {
-        GitHubSettings.VectraArchiveHashFileName.Should().StartWith("vectra-");
+        GitHubSettings.SynentraArchiveHashFileName.Should().StartWith("synentra-");
     }
 
     [Fact]
-    public void GitHubSettings_VectraArchiveHashFileName_EndsWithSha256()
+    public void GitHubSettings_SynentraArchiveHashFileName_EndsWithSha256()
     {
-        GitHubSettings.VectraArchiveHashFileName.Should().EndWith(".sha256");
+        GitHubSettings.SynentraArchiveHashFileName.Should().EndWith(".sha256");
     }
 
     [Fact]
-    public void GitHubSettings_VectraCtlArchiveFileName_StartsWithVectrактlPrefix()
+    public void GitHubSettings_SynentraCtlArchiveFileName_StartsWithSynCtlPrefix()
     {
-        GitHubSettings.VectraCtlArchiveFileName.Should().StartWith("vectractl-");
+        GitHubSettings.SynentraCtlArchiveFileName.Should().StartWith("synctl-");
     }
 
     [Fact]
-    public void GitHubSettings_VectraCtlArchiveFileName_IsLowerCase()
+    public void GitHubSettings_SynentraCtlArchiveFileName_IsLowerCase()
     {
-        GitHubSettings.VectraCtlArchiveFileName.Should().Be(GitHubSettings.VectraCtlArchiveFileName.ToLower());
+        GitHubSettings.SynentraCtlArchiveFileName.Should().Be(GitHubSettings.SynentraCtlArchiveFileName.ToLower());
     }
 
     [Fact]
-    public void GitHubSettings_VectraCtlArchiveHashFileName_StartsWithVectraCtlPrefix()
+    public void GitHubSettings_SynentraCtlArchiveHashFileName_StartsWithSynCtlPrefix()
     {
-        GitHubSettings.VectraCtlArchiveHashFileName.Should().StartWith("vectractl-");
+        GitHubSettings.SynentraCtlArchiveHashFileName.Should().StartWith("synctl-");
     }
 
     [Fact]
-    public void GitHubSettings_VectraCtlArchiveHashFileName_EndsWithSha256()
+    public void GitHubSettings_SynentraCtlArchiveHashFileName_EndsWithSha256()
     {
-        GitHubSettings.VectraCtlArchiveHashFileName.Should().EndWith(".sha256");
+        GitHubSettings.SynentraCtlArchiveHashFileName.Should().EndWith(".sha256");
     }
 
     [Fact]
-    public void GitHubSettings_VectraArchiveFileName_ContainsExpectedExtension()
+    public void GitHubSettings_SynentraArchiveFileName_ContainsExpectedExtension()
     {
         var expected = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? ".zip" : ".tar.gz";
-        GitHubSettings.VectraArchiveFileName.Should().Contain(expected);
+        GitHubSettings.SynentraArchiveFileName.Should().Contain(expected);
     }
 
     [Fact]
-    public void GitHubSettings_VectraArchiveTemporaryFileName_StartsWithVectraPrefix()
+    public void GitHubSettings_SynentraArchiveTemporaryFileName_StartsWithSynentraPrefix()
     {
-        GitHubSettings.VectraArchiveTemporaryFileName.Should().StartWith("vectra-");
+        GitHubSettings.SynentraArchiveTemporaryFileName.Should().StartWith("synentra-");
     }
 
     [Fact]
-    public void GitHubSettings_VectraArchiveTemporaryFileName_IsLowerCase()
+    public void GitHubSettings_SynentraArchiveTemporaryFileName_IsLowerCase()
     {
-        var fileName = GitHubSettings.VectraArchiveTemporaryFileName;
+        var fileName = GitHubSettings.SynentraArchiveTemporaryFileName;
         fileName.Should().Be(fileName.ToLower());
     }
 
     [Fact]
-    public void GitHubSettings_VectraArchiveTemporaryHashFileName_StartsWithVectraPrefix()
+    public void GitHubSettings_SynentraArchiveTemporaryHashFileName_StartsWithSynentraPrefix()
     {
-        GitHubSettings.VectraArchiveTemporaryHashFileName.Should().StartWith("vectra-");
+        GitHubSettings.SynentraArchiveTemporaryHashFileName.Should().StartWith("synentra-");
     }
 
     [Fact]
-    public void GitHubSettings_VectraArchiveTemporaryHashFileName_EndsWithSha256()
+    public void GitHubSettings_SynentraArchiveTemporaryHashFileName_EndsWithSha256()
     {
-        GitHubSettings.VectraArchiveTemporaryHashFileName.Should().EndWith(".sha256");
+        GitHubSettings.SynentraArchiveTemporaryHashFileName.Should().EndWith(".sha256");
     }
 
     [Fact]
     public void GitHubSettings_TwoCallsToTemporaryFileName_ReturnDifferentValues()
     {
-        var first = GitHubSettings.VectraArchiveTemporaryFileName;
-        var second = GitHubSettings.VectraArchiveTemporaryFileName;
+        var first = GitHubSettings.SynentraArchiveTemporaryFileName;
+        var second = GitHubSettings.SynentraArchiveTemporaryFileName;
 
         first.Should().NotBe(second);
     }
@@ -116,8 +116,8 @@ public class GitHubSettingsTests
     [Fact]
     public void GitHubSettings_TwoCallsToTemporaryHashFileName_ReturnDifferentValues()
     {
-        var first = GitHubSettings.VectraArchiveTemporaryHashFileName;
-        var second = GitHubSettings.VectraArchiveTemporaryHashFileName;
+        var first = GitHubSettings.SynentraArchiveTemporaryHashFileName;
+        var second = GitHubSettings.SynentraArchiveTemporaryHashFileName;
 
         first.Should().NotBe(second);
     }

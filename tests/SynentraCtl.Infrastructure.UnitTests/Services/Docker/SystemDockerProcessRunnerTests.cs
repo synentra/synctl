@@ -1,14 +1,14 @@
 using FluentAssertions;
 using NSubstitute;
-using VectraCtl.Core.Models.Docker;
-using VectraCtl.Core.Services.Logger;
-using VectraCtl.Infrastructure.Services.Docker;
+using SynentraCtl.Core.Models.Docker;
+using SynentraCtl.Core.Services.Logger;
+using SynentraCtl.Infrastructure.Services.Docker;
 
-namespace VectraCtl.Infrastructure.UnitTests.Services.Docker;
+namespace SynentraCtl.Infrastructure.UnitTests.Services.Docker;
 
 public class SystemDockerProcessRunnerTests
 {
-    private readonly IVectraCtlLogger _logger = Substitute.For<IVectraCtlLogger>();
+    private readonly ISynentraCtlLogger _logger = Substitute.For<ISynentraCtlLogger>();
     private readonly SystemDockerProcessRunner _sut;
 
     public SystemDockerProcessRunnerTests()
@@ -130,7 +130,7 @@ public class SystemDockerProcessRunnerTests
         private readonly string _exe;
         private readonly string[] _fixedArgs;
 
-        public FakeExecutableRunner(IVectraCtlLogger logger, string exe, params string[] fixedArgs)
+        public FakeExecutableRunner(ISynentraCtlLogger logger, string exe, params string[] fixedArgs)
             : base(logger)
         {
             _exe = exe;

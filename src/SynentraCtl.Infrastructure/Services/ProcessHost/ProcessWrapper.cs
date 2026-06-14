@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace VectraCtl.Infrastructure.Services.ProcessHost;
+namespace SynentraCtl.Infrastructure.Services.ProcessHost;
 
 public class ProcessWrapper : IProcessWrapper
 {

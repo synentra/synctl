@@ -1,15 +1,15 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.CommandLine;
 using Synentra.Client.Abstractions;
-using VectraCtl.Core.Services.Logger;
+using SynentraCtl.Core.Services.Logger;
 
-namespace VectraCtl.Commands;
+namespace SynentraCtl.Commands;
 
 internal static class PoliciesCommand
 {
     public static Command Create(IServiceProvider serviceProvider)
     {
-        var command = new Command("policies", "Browse Vectra governance policies");
+        var command = new Command("policies", "Browse Synentra governance policies");
 
         command.Subcommands.Add(CreateListCommand(serviceProvider));
         command.Subcommands.Add(CreateDetailsCommand(serviceProvider));

@@ -1,12 +1,12 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.CommandLine;
 using System.Runtime.InteropServices;
-using VectraCtl.Core.Services.Docker;
-using VectraCtl.Core.Services.Extractor;
-using VectraCtl.Core.Services.Location;
-using VectraCtl.Core.Services.Logger;
+using SynentraCtl.Core.Services.Docker;
+using SynentraCtl.Core.Services.Extractor;
+using SynentraCtl.Core.Services.Location;
+using SynentraCtl.Core.Services.Logger;
 
-namespace VectraCtl.Commands;
+namespace SynentraCtl.Commands;
 
 internal static class CommandHelpers
 {
@@ -72,9 +72,9 @@ internal static class CommandHelpers
 
     internal static async Task ExecuteAsync(
         IServiceProvider serviceProvider,
-        Func<IVectraCtlLogger, IServiceProvider, Task> action)
+        Func<ISynentraCtlLogger, IServiceProvider, Task> action)
     {
-        var logger = serviceProvider.GetRequiredService<IVectraCtlLogger>();
+        var logger = serviceProvider.GetRequiredService<ISynentraCtlLogger>();
         try
         {
             await action(logger, serviceProvider);
@@ -149,8 +149,8 @@ internal static class CommandHelpers
         string destinationFolder,
         CancellationToken cancellationToken)
     {
-        var stagingDir = Path.Combine(location.DefaultVectraBinaryDirectoryName, destinationFolder, "downloadedFiles");
-        var destDir = Path.Combine(location.DefaultVectraBinaryDirectoryName, destinationFolder);
+        var stagingDir = Path.Combine(location.DefaultSynentraBinaryDirectoryName, destinationFolder, "downloadedFiles");
+        var destDir = Path.Combine(location.DefaultSynentraBinaryDirectoryName, destinationFolder);
 
         Directory.CreateDirectory(stagingDir);
         extractor.ExtractArchive(archivePath, stagingDir);
@@ -166,8 +166,8 @@ internal static class CommandHelpers
         string archivePath,
         CancellationToken cancellationToken)
     {
-        var stagingDir = Path.Combine(location.DefaultVectraBinaryDirectoryName, "downloadedFiles");
-        var destDir = location.DefaultVectraBinaryDirectoryName;
+        var stagingDir = Path.Combine(location.DefaultSynentraBinaryDirectoryName, "downloadedFiles");
+        var destDir = location.DefaultSynentraBinaryDirectoryName;
 
         Directory.CreateDirectory(stagingDir);
         extractor.ExtractArchive(archivePath, stagingDir);

@@ -1,4 +1,4 @@
-﻿namespace VectraCtl.Infrastructure.Services.ProcessHost;
+﻿namespace SynentraCtl.Infrastructure.Services.ProcessHost;
 
 public interface IProcessWrapper
 {

@@ -1,14 +1,14 @@
-﻿using VectraCtl.Core.Services.Logger;
-using VectraCtl.Core.Services.ProcessHost;
+﻿using SynentraCtl.Core.Services.Logger;
+using SynentraCtl.Core.Services.ProcessHost;
 
-namespace VectraCtl.Infrastructure.Services.ProcessHost;
+namespace SynentraCtl.Infrastructure.Services.ProcessHost;
 
 public class ProcessHandler : IProcessHandler
 {
-    private readonly IVectraCtlLogger _flowCtlLogger;
+    private readonly ISynentraCtlLogger _flowCtlLogger;
     private readonly IProcessProvider _processProvider;
 
-    public ProcessHandler(IVectraCtlLogger flowCtlLogger, IProcessProvider processProvider)
+    public ProcessHandler(ISynentraCtlLogger flowCtlLogger, IProcessProvider processProvider)
     {
         _flowCtlLogger = flowCtlLogger;
         _processProvider = processProvider;

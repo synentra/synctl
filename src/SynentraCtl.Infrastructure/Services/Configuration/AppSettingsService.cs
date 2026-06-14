@@ -1,9 +1,9 @@
-using VectraCtl.Core.Models.Configuration;
-using VectraCtl.Core.Serialization;
-using VectraCtl.Core.Services.Configuration;
-using VectraCtl.Core.Services.Location;
+using SynentraCtl.Core.Models.Configuration;
+using SynentraCtl.Core.Serialization;
+using SynentraCtl.Core.Services.Configuration;
+using SynentraCtl.Core.Services.Location;
 
-namespace VectraCtl.Infrastructure.Services.Configuration;
+namespace SynentraCtl.Infrastructure.Services.Configuration;
 
 public class AppSettingsService : IAppSettingsService
 {
@@ -62,15 +62,15 @@ public class AppSettingsService : IAppSettingsService
 
     private AppSettings CreateDefaultSettings()
     {
-        var defaultHostPath = Path.Combine(_location.DefaultVectraDirectoryName, "data");
+        var defaultHostPath = Path.Combine(_location.DefaultSynentraDirectoryName, "data");
         return new AppSettings
         {
             DeploymentMode = DeploymentMode.Binary,
             Docker = new DockerSettings
             {
-                ImageName = "cortexiumlabs/vectra",
+                ImageName = "synentra/synentra",
                 Tag = string.Empty,
-                ContainerName = "vectra-gateway",
+                ContainerName = "synentra-gateway",
                 Port = 7080,
                 HostDataPath = defaultHostPath,
                 ContainerDataPath = "/app/data"

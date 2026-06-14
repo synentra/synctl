@@ -3,20 +3,20 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using System.CommandLine;
 using Synentra.Client.Abstractions;
-using VectraCtl.Commands;
-using VectraCtl.Core.Models.Configuration;
-using VectraCtl.Core.Models.Docker;
-using VectraCtl.Core.Serialization;
-using VectraCtl.Core.Services.Configuration;
-using VectraCtl.Core.Services.Docker;
-using VectraCtl.Core.Services.Extractor;
-using VectraCtl.Core.Services.Github;
-using VectraCtl.Core.Services.Location;
-using VectraCtl.Core.Services.Logger;
-using VectraCtl.Core.Services.ProcessHost;
-using VectraCtl.Services.Version;
+using SynentraCtl.Commands;
+using SynentraCtl.Core.Models.Configuration;
+using SynentraCtl.Core.Models.Docker;
+using SynentraCtl.Core.Serialization;
+using SynentraCtl.Core.Services.Configuration;
+using SynentraCtl.Core.Services.Docker;
+using SynentraCtl.Core.Services.Extractor;
+using SynentraCtl.Core.Services.Github;
+using SynentraCtl.Core.Services.Location;
+using SynentraCtl.Core.Services.Logger;
+using SynentraCtl.Core.Services.ProcessHost;
+using SynentraCtl.Services.Version;
 
-namespace VectraCtl.UnitTests.Commands;
+namespace SynentraCtl.UnitTests.Commands;
 
 /// <summary>
 /// Validates that each command builder creates a Command with the expected name and subcommands,
@@ -31,13 +31,13 @@ public class CommandCreationTests
         // Build a service provider with all stubs needed by every command's Create() method
         var services = new ServiceCollection();
 
-        var logger = Substitute.For<IVectraCtlLogger>();
+        var logger = Substitute.For<ISynentraCtlLogger>();
         var location = Substitute.For<ILocation>();
         location.RootLocation.Returns(Path.GetTempPath());
-        location.DefaultVectraDirectoryName.Returns(Path.Combine(Path.GetTempPath(), ".vectra"));
-        location.DefaultVectraBinaryDirectoryName.Returns(Path.Combine(Path.GetTempPath(), ".vectra", "bin"));
-        location.VectraBinaryName.Returns("vectra");
-        location.LookupVectraBinaryFilePath(Arg.Any<string>()).Returns(Path.Combine(Path.GetTempPath(), "vectra"));
+        location.DefaultSynentraDirectoryName.Returns(Path.Combine(Path.GetTempPath(), ".synentra"));
+        location.DefaultSynentraBinaryDirectoryName.Returns(Path.Combine(Path.GetTempPath(), ".synentra", "bin"));
+        location.SynentraBinaryName.Returns("synentra");
+        location.LookupSynentraBinaryFilePath(Arg.Any<string>()).Returns(Path.Combine(Path.GetTempPath(), "synentra"));
 
         var docker = Substitute.For<IDockerService>();
         var appSettings = Substitute.For<IAppSettingsService>();
@@ -136,9 +136,9 @@ public class CommandCreationTests
     }
 
     [Fact]
-    public void VectraCommandLine_Create_ReturnsRootCommandWithAllSubcommands()
+    public void SynentraCommandLine_Create_ReturnsRootCommandWithAllSubcommands()
     {
-        var root = VectraCommandLine.Create(_sp, Array.Empty<string>());
+        var root = SynentraCommandLine.Create(_sp, Array.Empty<string>());
         root.Should().NotBeNull();
 
         var names = root.Subcommands.Select(s => s.Name).ToList();
