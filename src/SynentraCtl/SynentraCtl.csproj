@@ -24,18 +24,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<InternalsVisibleTo Include="VectraCtl.UnitTests" />
+	<InternalsVisibleTo Include="SynentraCtl.UnitTests" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Spectre.Console" Version="0.55.2" />
     <PackageReference Include="System.CommandLine" Version="2.0.8" />
-    <PackageReference Include="Vectra.Client.Net" Version="1.1.0" />
+    <PackageReference Include="Synentra.Client.Net" Version="1.0.0" />
     <PackageReference Include="YamlDotNet" Version="17.1.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\VectraCtl.Infrastructure\VectraCtl.Infrastructure.csproj" />
+    <ProjectReference Include="..\SynentraCtl.Infrastructure\SynentraCtl.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

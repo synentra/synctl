@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<InternalsVisibleTo Include="VectraCtl.Infrastructure.UnitTests" />
-	<InternalsVisibleTo Include="VectraCtl.UnitTests" />
+	<InternalsVisibleTo Include="SynentraCtl.Infrastructure.UnitTests" />
+	<InternalsVisibleTo Include="SynentraCtl.UnitTests" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\VectraCtl.Core\VectraCtl.Core.csproj" />
+    <ProjectReference Include="..\SynentraCtl.Core\SynentraCtl.Core.csproj" />
   </ItemGroup>
 
 </Project>

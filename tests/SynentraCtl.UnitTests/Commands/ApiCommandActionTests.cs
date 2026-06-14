@@ -3,11 +3,11 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using System.CommandLine;
-using Vectra.Client.Abstractions;
-using Vectra.Client.Models.Agents;
-using Vectra.Client.Models.Hitl;
-using Vectra.Client.Models.Policies;
-using Vectra.Client.Models.Tokens;
+using Synentra.Client.Abstractions;
+using Synentra.Client.Models.Agents;
+using Synentra.Client.Models.Hitl;
+using Synentra.Client.Models.Policies;
+using Synentra.Client.Models.Tokens;
 using VectraCtl.Commands;
 using VectraCtl.Core.Services.Logger;
 
@@ -25,7 +25,7 @@ public class ApiCommandActionTests
     {
         var services = new ServiceCollection();
         services.AddSingleton(Substitute.For<IVectraCtlLogger>());
-        services.AddSingleton(Substitute.For<IVectraClient>());
+        services.AddSingleton(Substitute.For<ISynentraClient>());
         configure?.Invoke(services);
         return services.BuildServiceProvider();
     }
@@ -40,8 +40,8 @@ public class ApiCommandActionTests
     {
         var provider = BuildProvider(s =>
         {
-            var client = Substitute.For<IVectraClient>();
-            var agentClient = Substitute.For<IVectraAgentClient>();
+            var client = Substitute.For<ISynentraClient>();
+            var agentClient = Substitute.For<ISynentraAgentClient>();
             agentClient.ListAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
                        .Returns(new List<AgentSummary>());
             client.Agents.Returns(agentClient);
@@ -59,8 +59,8 @@ public class ApiCommandActionTests
     {
         var provider = BuildProvider(s =>
         {
-            var client = Substitute.For<IVectraClient>();
-            var agentClient = Substitute.For<IVectraAgentClient>();
+            var client = Substitute.For<ISynentraClient>();
+            var agentClient = Substitute.For<ISynentraAgentClient>();
             agentClient.ListAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
                        .Throws(new Exception("server error"));
             client.Agents.Returns(agentClient);
@@ -78,8 +78,8 @@ public class ApiCommandActionTests
     {
         var provider = BuildProvider(s =>
         {
-            var client = Substitute.For<IVectraClient>();
-            var agentClient = Substitute.For<IVectraAgentClient>();
+            var client = Substitute.For<ISynentraClient>();
+            var agentClient = Substitute.For<ISynentraAgentClient>();
             agentClient.RegisterAsync(Arg.Any<RegisterAgentRequest>(), Arg.Any<CancellationToken>())
                        .Returns(new RegisterAgentResult());
             client.Agents.Returns(agentClient);
@@ -97,8 +97,8 @@ public class ApiCommandActionTests
     {
         var provider = BuildProvider(s =>
         {
-            var client = Substitute.For<IVectraClient>();
-            var agentClient = Substitute.For<IVectraAgentClient>();
+            var client = Substitute.For<ISynentraClient>();
+            var agentClient = Substitute.For<ISynentraAgentClient>();
             agentClient.RegisterAsync(Arg.Any<RegisterAgentRequest>(), Arg.Any<CancellationToken>())
                        .Throws(new Exception("conflict"));
             client.Agents.Returns(agentClient);
@@ -116,8 +116,8 @@ public class ApiCommandActionTests
     {
         var provider = BuildProvider(s =>
         {
-            var client = Substitute.For<IVectraClient>();
-            var agentClient = Substitute.For<IVectraAgentClient>();
+            var client = Substitute.For<ISynentraClient>();
+            var agentClient = Substitute.For<ISynentraAgentClient>();
             agentClient.AssignPolicyAsync(Arg.Any<Guid>(), Arg.Any<AssignPolicyRequest>(), Arg.Any<CancellationToken>())
                        .Returns(Task.CompletedTask);
             client.Agents.Returns(agentClient);
@@ -135,8 +135,8 @@ public class ApiCommandActionTests
     {
         var provider = BuildProvider(s =>
         {
-            var client = Substitute.For<IVectraClient>();
-            var agentClient = Substitute.For<IVectraAgentClient>();
+            var client = Substitute.For<ISynentraClient>();
+            var agentClient = Substitute.For<ISynentraAgentClient>();
             agentClient.AssignPolicyAsync(Arg.Any<Guid>(), Arg.Any<AssignPolicyRequest>(), Arg.Any<CancellationToken>())
                        .Throws(new Exception("not found"));
             client.Agents.Returns(agentClient);
@@ -154,8 +154,8 @@ public class ApiCommandActionTests
     {
         var provider = BuildProvider(s =>
         {
-            var client = Substitute.For<IVectraClient>();
-            var agentClient = Substitute.For<IVectraAgentClient>();
+            var client = Substitute.For<ISynentraClient>();
+            var agentClient = Substitute.For<ISynentraAgentClient>();
             agentClient.DeleteAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
                        .Returns(Task.CompletedTask);
             client.Agents.Returns(agentClient);
@@ -173,8 +173,8 @@ public class ApiCommandActionTests
     {
         var provider = BuildProvider(s =>
         {
-            var client = Substitute.For<IVectraClient>();
-            var agentClient = Substitute.For<IVectraAgentClient>();
+            var client = Substitute.For<ISynentraClient>();
+            var agentClient = Substitute.For<ISynentraAgentClient>();
             agentClient.DeleteAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
                        .Throws(new Exception("forbidden"));
             client.Agents.Returns(agentClient);
@@ -192,8 +192,8 @@ public class ApiCommandActionTests
     {
         var provider = BuildProvider(s =>
         {
-            var client = Substitute.For<IVectraClient>();
-            var agentClient = Substitute.For<IVectraAgentClient>();
+            var client = Substitute.For<ISynentraClient>();
+            var agentClient = Substitute.For<ISynentraAgentClient>();
             agentClient.LiftQuarantineAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
                        .Returns(Task.CompletedTask);
             client.Agents.Returns(agentClient);
@@ -211,8 +211,8 @@ public class ApiCommandActionTests
     {
         var provider = BuildProvider(s =>
         {
-            var client = Substitute.For<IVectraClient>();
-            var agentClient = Substitute.For<IVectraAgentClient>();
+            var client = Substitute.For<ISynentraClient>();
+            var agentClient = Substitute.For<ISynentraAgentClient>();
             agentClient.LiftQuarantineAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
                        .Throws(new Exception("bad request"));
             client.Agents.Returns(agentClient);
@@ -232,8 +232,8 @@ public class ApiCommandActionTests
     {
         var provider = BuildProvider(s =>
         {
-            var client = Substitute.For<IVectraClient>();
-            var hitlClient = Substitute.For<IVectraHitlClient>();
+            var client = Substitute.For<ISynentraClient>();
+            var hitlClient = Substitute.For<ISynentraHitlClient>();
             hitlClient.GetAllPendingAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
                       .Returns(Task.FromResult<IReadOnlyList<PendingHitlRequest>>(new List<PendingHitlRequest>()));
             client.Hitl.Returns(hitlClient);
@@ -251,8 +251,8 @@ public class ApiCommandActionTests
     {
         var provider = BuildProvider(s =>
         {
-            var client = Substitute.For<IVectraClient>();
-            var hitlClient = Substitute.For<IVectraHitlClient>();
+            var client = Substitute.For<ISynentraClient>();
+            var hitlClient = Substitute.For<ISynentraHitlClient>();
             hitlClient.GetAllPendingAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
                       .Throws(new Exception("server error"));
             client.Hitl.Returns(hitlClient);
@@ -270,8 +270,8 @@ public class ApiCommandActionTests
     {
         var provider = BuildProvider(s =>
         {
-            var client = Substitute.For<IVectraClient>();
-            var hitlClient = Substitute.For<IVectraHitlClient>();
+            var client = Substitute.For<ISynentraClient>();
+            var hitlClient = Substitute.For<ISynentraHitlClient>();
             hitlClient.GetStatusAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
                       .Returns(new HitlStatusResponse());
             client.Hitl.Returns(hitlClient);
@@ -289,8 +289,8 @@ public class ApiCommandActionTests
     {
         var provider = BuildProvider(s =>
         {
-            var client = Substitute.For<IVectraClient>();
-            var hitlClient = Substitute.For<IVectraHitlClient>();
+            var client = Substitute.For<ISynentraClient>();
+            var hitlClient = Substitute.For<ISynentraHitlClient>();
             hitlClient.GetStatusAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
                       .Throws(new Exception("not found"));
             client.Hitl.Returns(hitlClient);
@@ -308,8 +308,8 @@ public class ApiCommandActionTests
     {
         var provider = BuildProvider(s =>
         {
-            var client = Substitute.For<IVectraClient>();
-            var hitlClient = Substitute.For<IVectraHitlClient>();
+            var client = Substitute.For<ISynentraClient>();
+            var hitlClient = Substitute.For<ISynentraHitlClient>();
             hitlClient.ApproveAsync(Arg.Any<string>(), Arg.Any<ReviewDecisionRequest>(), Arg.Any<CancellationToken>())
                       .Returns(Task.CompletedTask);
             client.Hitl.Returns(hitlClient);
@@ -327,8 +327,8 @@ public class ApiCommandActionTests
     {
         var provider = BuildProvider(s =>
         {
-            var client = Substitute.For<IVectraClient>();
-            var hitlClient = Substitute.For<IVectraHitlClient>();
+            var client = Substitute.For<ISynentraClient>();
+            var hitlClient = Substitute.For<ISynentraHitlClient>();
             hitlClient.ApproveAsync(Arg.Any<string>(), Arg.Any<ReviewDecisionRequest>(), Arg.Any<CancellationToken>())
                       .Throws(new Exception("already resolved"));
             client.Hitl.Returns(hitlClient);
@@ -346,8 +346,8 @@ public class ApiCommandActionTests
     {
         var provider = BuildProvider(s =>
         {
-            var client = Substitute.For<IVectraClient>();
-            var hitlClient = Substitute.For<IVectraHitlClient>();
+            var client = Substitute.For<ISynentraClient>();
+            var hitlClient = Substitute.For<ISynentraHitlClient>();
             hitlClient.DenyAsync(Arg.Any<string>(), Arg.Any<ReviewDecisionRequest>(), Arg.Any<CancellationToken>())
                       .Returns(Task.CompletedTask);
             client.Hitl.Returns(hitlClient);
@@ -365,8 +365,8 @@ public class ApiCommandActionTests
     {
         var provider = BuildProvider(s =>
         {
-            var client = Substitute.For<IVectraClient>();
-            var hitlClient = Substitute.For<IVectraHitlClient>();
+            var client = Substitute.For<ISynentraClient>();
+            var hitlClient = Substitute.For<ISynentraHitlClient>();
             hitlClient.DenyAsync(Arg.Any<string>(), Arg.Any<ReviewDecisionRequest>(), Arg.Any<CancellationToken>())
                       .Throws(new Exception("conflict"));
             client.Hitl.Returns(hitlClient);
@@ -386,8 +386,8 @@ public class ApiCommandActionTests
     {
         var provider = BuildProvider(s =>
         {
-            var client = Substitute.For<IVectraClient>();
-            var policyClient = Substitute.For<IVectraPolicyClient>();
+            var client = Substitute.For<ISynentraClient>();
+            var policyClient = Substitute.For<ISynentraPolicyClient>();
             policyClient.ListAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
                         .Returns(Task.FromResult<IReadOnlyList<PolicySummary>>(new List<PolicySummary>()));
             client.Policies.Returns(policyClient);
@@ -405,8 +405,8 @@ public class ApiCommandActionTests
     {
         var provider = BuildProvider(s =>
         {
-            var client = Substitute.For<IVectraClient>();
-            var policyClient = Substitute.For<IVectraPolicyClient>();
+            var client = Substitute.For<ISynentraClient>();
+            var policyClient = Substitute.For<ISynentraPolicyClient>();
             policyClient.ListAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
                         .Throws(new Exception("server error"));
             client.Policies.Returns(policyClient);
@@ -424,8 +424,8 @@ public class ApiCommandActionTests
     {
         var provider = BuildProvider(s =>
         {
-            var client = Substitute.For<IVectraClient>();
-            var policyClient = Substitute.For<IVectraPolicyClient>();
+            var client = Substitute.For<ISynentraClient>();
+            var policyClient = Substitute.For<ISynentraPolicyClient>();
             policyClient.GetAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
                         .Returns(new PolicyDetails { Name = "my-policy" });
             client.Policies.Returns(policyClient);
@@ -443,8 +443,8 @@ public class ApiCommandActionTests
     {
         var provider = BuildProvider(s =>
         {
-            var client = Substitute.For<IVectraClient>();
-            var policyClient = Substitute.For<IVectraPolicyClient>();
+            var client = Substitute.For<ISynentraClient>();
+            var policyClient = Substitute.For<ISynentraPolicyClient>();
             policyClient.GetAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
                         .Throws(new Exception("not found"));
             client.Policies.Returns(policyClient);
@@ -464,8 +464,8 @@ public class ApiCommandActionTests
     {
         var provider = BuildProvider(s =>
         {
-            var client = Substitute.For<IVectraClient>();
-            var tokenClient = Substitute.For<IVectraTokenClient>();
+            var client = Substitute.For<ISynentraClient>();
+            var tokenClient = Substitute.For<ISynentraTokenClient>();
             tokenClient.GenerateAsync(Arg.Any<GenerateTokenRequest>(), Arg.Any<CancellationToken>())
                        .Returns(new GenerateTokenResult());
             client.Tokens.Returns(tokenClient);
@@ -483,8 +483,8 @@ public class ApiCommandActionTests
     {
         var provider = BuildProvider(s =>
         {
-            var client = Substitute.For<IVectraClient>();
-            var tokenClient = Substitute.For<IVectraTokenClient>();
+            var client = Substitute.For<ISynentraClient>();
+            var tokenClient = Substitute.For<ISynentraTokenClient>();
             tokenClient.GenerateAsync(Arg.Any<GenerateTokenRequest>(), Arg.Any<CancellationToken>())
                        .Throws(new Exception("unauthorized"));
             client.Tokens.Returns(tokenClient);

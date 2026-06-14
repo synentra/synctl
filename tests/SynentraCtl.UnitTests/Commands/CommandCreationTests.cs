@@ -2,7 +2,7 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using System.CommandLine;
-using Vectra.Client.Abstractions;
+using Synentra.Client.Abstractions;
 using VectraCtl.Commands;
 using VectraCtl.Core.Models.Configuration;
 using VectraCtl.Core.Models.Docker;
@@ -46,7 +46,7 @@ public class CommandCreationTests
         var extractor = Substitute.For<IArchiveExtractor>();
         var processHandler = Substitute.For<IProcessHandler>();
         var version = Substitute.For<IVersion>();
-        var vectraClient = Substitute.For<IVectraClient>();
+        var synentraClient = Substitute.For<ISynentraClient>();
 
         services.AddSingleton(logger);
         services.AddSingleton(location);
@@ -56,7 +56,7 @@ public class CommandCreationTests
         services.AddSingleton(extractor);
         services.AddSingleton(processHandler);
         services.AddSingleton(version);
-        services.AddSingleton(vectraClient);
+        services.AddSingleton(synentraClient);
 
         _sp = services.BuildServiceProvider();
     }

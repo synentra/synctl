@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.CommandLine;
-using Vectra.Client.Abstractions;
-using Vectra.Client.Models.Tokens;
+using Synentra.Client.Abstractions;
+using Synentra.Client.Models.Tokens;
 using VectraCtl.Core.Services.Logger;
 
 namespace VectraCtl.Commands;
@@ -33,7 +33,7 @@ internal static class TokenCommand
 
         command.SetAction((parseResult, ct) => CommandHelpers.ExecuteAsync(serviceProvider, async (logger, sp) =>
         {
-            var client = sp.GetRequiredService<IVectraClient>();
+            var client = sp.GetRequiredService<ISynentraClient>();
             var result = await client.Tokens.GenerateAsync(new GenerateTokenRequest
             {
                 AgentId = parseResult.GetValue(agentIdOption),

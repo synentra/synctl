@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\VectraCtl.Infrastructure\VectraCtl.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\SynentraCtl.Infrastructure\SynentraCtl.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

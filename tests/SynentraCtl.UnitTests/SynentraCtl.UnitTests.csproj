@@ -23,8 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\VectraCtl\VectraCtl.csproj" />
-    <ProjectReference Include="..\..\src\VectraCtl.Infrastructure\VectraCtl.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\SynentraCtl\SynentraCtl.csproj" />
+    <ProjectReference Include="..\..\src\SynentraCtl.Infrastructure\SynentraCtl.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.CommandLine;
-using Vectra.Client.Abstractions;
-using Vectra.Client.Models.Hitl;
+using Synentra.Client.Abstractions;
+using Synentra.Client.Models.Hitl;
 using VectraCtl.Core.Services.Logger;
 
 namespace VectraCtl.Commands;
@@ -35,7 +35,7 @@ internal static class HitlCommand
 
         cmd.SetAction((parseResult, ct) => CommandHelpers.ExecuteAsync(serviceProvider, async (logger, sp) =>
         {
-            var client = sp.GetRequiredService<IVectraClient>();
+            var client = sp.GetRequiredService<ISynentraClient>();
             var items = await client.Hitl.GetAllPendingAsync(
                 parseResult.GetValue(pageOption),
                 parseResult.GetValue(pageSizeOption), ct);
@@ -58,7 +58,7 @@ internal static class HitlCommand
 
         cmd.SetAction((parseResult, ct) => CommandHelpers.ExecuteAsync(serviceProvider, async (logger, sp) =>
         {
-            var client = sp.GetRequiredService<IVectraClient>();
+            var client = sp.GetRequiredService<ISynentraClient>();
             var status = await client.Hitl.GetStatusAsync(parseResult.GetValue(idOption)!, ct);
             logger.Write(status, parseResult.GetValue(outputOption));
         }));
@@ -79,7 +79,7 @@ internal static class HitlCommand
 
         cmd.SetAction((parseResult, ct) => CommandHelpers.ExecuteAsync(serviceProvider, async (logger, sp) =>
         {
-            var client = sp.GetRequiredService<IVectraClient>();
+            var client = sp.GetRequiredService<ISynentraClient>();
             await client.Hitl.ApproveAsync(
                 parseResult.GetValue(idOption)!,
                 new ReviewDecisionRequest { Comment = parseResult.GetValue(commentOption) },
@@ -103,7 +103,7 @@ internal static class HitlCommand
 
         cmd.SetAction((parseResult, ct) => CommandHelpers.ExecuteAsync(serviceProvider, async (logger, sp) =>
         {
-            var client = sp.GetRequiredService<IVectraClient>();
+            var client = sp.GetRequiredService<ISynentraClient>();
             await client.Hitl.DenyAsync(
                 parseResult.GetValue(idOption)!,
                 new ReviewDecisionRequest { Comment = parseResult.GetValue(commentOption) },

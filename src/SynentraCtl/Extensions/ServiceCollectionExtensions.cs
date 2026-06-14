@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
-using Vectra.Client.Extensions;
+using Synentra.Client.Extensions;
 using VectraCtl.ApplicationBuilders;
 using VectraCtl.Core.Serialization;
 using VectraCtl.Core.Services.Location;
@@ -42,7 +42,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IJsonDeserializer, JsonDeserializer>()
             .AddTransient<ICliApplicationBuilder, CliApplicationBuilder>()
             .AddSingleton(AnsiConsole.Console)
-            .AddVectraClient(options =>
+            .AddSynentraClient(options =>
             {
                 options.BaseUrl = "http://localhost:7080";
             });

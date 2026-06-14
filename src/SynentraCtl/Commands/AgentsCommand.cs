@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.CommandLine;
-using Vectra.Client.Abstractions;
-using Vectra.Client.Models.Agents;
+using Synentra.Client.Abstractions;
+using Synentra.Client.Models.Agents;
 using VectraCtl.Core.Services.Logger;
 
 namespace VectraCtl.Commands;
@@ -36,7 +36,7 @@ internal static class AgentsCommand
 
         cmd.SetAction((parseResult, ct) => CommandHelpers.ExecuteAsync(serviceProvider, async (logger, sp) =>
         {
-            var client = sp.GetRequiredService<IVectraClient>();
+            var client = sp.GetRequiredService<ISynentraClient>();
             var agents = await client.Agents.ListAsync(
                 parseResult.GetValue(pageOption),
                 parseResult.GetValue(pageSizeOption), ct);
@@ -57,7 +57,7 @@ internal static class AgentsCommand
 
         cmd.SetAction((parseResult, ct) => CommandHelpers.ExecuteAsync(serviceProvider, async (logger, sp) =>
         {
-            var client = sp.GetRequiredService<IVectraClient>();
+            var client = sp.GetRequiredService<ISynentraClient>();
             await client.Agents.LiftQuarantineAsync(parseResult.GetValue(agentIdOption)!, ct);
             logger.Write("Quarantine lifted successfully.");
         }));
@@ -80,7 +80,7 @@ internal static class AgentsCommand
 
         cmd.SetAction((parseResult, ct) => CommandHelpers.ExecuteAsync(serviceProvider, async (logger, sp) =>
         {
-            var client = sp.GetRequiredService<IVectraClient>();
+            var client = sp.GetRequiredService<ISynentraClient>();
             var result = await client.Agents.RegisterAsync(new RegisterAgentRequest
             {
                 Name = parseResult.GetValue(nameOption)!,
@@ -106,7 +106,7 @@ internal static class AgentsCommand
 
         cmd.SetAction((parseResult, ct) => CommandHelpers.ExecuteAsync(serviceProvider, async (logger, sp) =>
         {
-            var client = sp.GetRequiredService<IVectraClient>();
+            var client = sp.GetRequiredService<ISynentraClient>();
             await client.Agents.AssignPolicyAsync(
                 parseResult.GetValue(agentIdOption),
                 new AssignPolicyRequest { PolicyName = parseResult.GetValue(policyOption)! },
@@ -128,7 +128,7 @@ internal static class AgentsCommand
 
         cmd.SetAction((parseResult, ct) => CommandHelpers.ExecuteAsync(serviceProvider, async (logger, sp) =>
         {
-            var client = sp.GetRequiredService<IVectraClient>();
+            var client = sp.GetRequiredService<ISynentraClient>();
             await client.Agents.DeleteAsync(parseResult.GetValue(agentIdOption), ct);
             logger.Write("Agent deleted.");
         }));

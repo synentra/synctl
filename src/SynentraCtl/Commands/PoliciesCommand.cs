@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.CommandLine;
-using Vectra.Client.Abstractions;
+using Synentra.Client.Abstractions;
 using VectraCtl.Core.Services.Logger;
 
 namespace VectraCtl.Commands;
@@ -32,7 +32,7 @@ internal static class PoliciesCommand
 
         cmd.SetAction((parseResult, ct) => CommandHelpers.ExecuteAsync(serviceProvider, async (logger, sp) =>
         {
-            var client = sp.GetRequiredService<IVectraClient>();
+            var client = sp.GetRequiredService<ISynentraClient>();
             var policies = await client.Policies.ListAsync(
                 parseResult.GetValue(pageOption),
                 parseResult.GetValue(pageSizeOption), ct);
@@ -55,7 +55,7 @@ internal static class PoliciesCommand
 
         cmd.SetAction((parseResult, ct) => CommandHelpers.ExecuteAsync(serviceProvider, async (logger, sp) =>
         {
-            var client = sp.GetRequiredService<IVectraClient>();
+            var client = sp.GetRequiredService<ISynentraClient>();
             var policy = await client.Policies.GetAsync(parseResult.GetValue(nameOption)!, ct);
             logger.Write(policy, parseResult.GetValue(outputOption));
         }));
