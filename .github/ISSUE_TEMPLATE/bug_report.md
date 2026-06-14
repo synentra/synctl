@@ -6,7 +6,7 @@ labels: type:bug
 assignees: ''
 ---
 
-## What version of VectraCtl?
+## What version of SynCtl?
 > e.g., 1.0.x
 
 ## Describe the bug
