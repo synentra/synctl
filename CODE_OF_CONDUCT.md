@@ -1,4 +1,4 @@
-# VectraCTL — Contributor Covenant Code of Conduct
+# SynCtl — Contributor Covenant Code of Conduct
 
 ## Our Pledge
 
@@ -36,7 +36,7 @@ This Code of Conduct applies within all community spaces, and also applies when 
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the Cortexium Labs maintainers at [contact@vectra.cortexiumlabs.com](mailto:contact@vectra.cortexiumlabs.com). All complaints will be reviewed and investigated promptly and fairly.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the Synentra maintainers at [contact@synentra.io](mailto:contact@synentra.io). All complaints will be reviewed and investigated promptly and fairly.
 
 All community leaders are obligated to respect the privacy and security of the reporter of any incident.
 
