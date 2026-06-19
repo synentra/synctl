@@ -1,17 +1,13 @@
 using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
-using System.CommandLine;
-using Synentra.Client.Abstractions;
 using SynentraCtl.Commands;
 using SynentraCtl.Core.Services.Docker;
 using SynentraCtl.Core.Services.Extractor;
 using SynentraCtl.Core.Services.Location;
-using SynentraCtl.Core.Services.Logger;
 
 namespace SynentraCtl.UnitTests.Commands;
 
-public class CommandHelpersAndProxyTests
+public class CommandHelpersTests
 {
     [Fact]
     public void IsNewerVersion_ParsedVersions_ReturnsExpectedResult()
@@ -156,48 +152,5 @@ public class CommandHelpersAndProxyTests
         {
             if (Directory.Exists(root)) Directory.Delete(root, true);
         }
-    }
-
-    [Fact]
-    public async Task ProxyCommand_Create_InvokedWithHeaders_WritesResponse()
-    {
-        var services = new ServiceCollection();
-        var logger = Substitute.For<ISynentraCtlLogger>();
-        var client = Substitute.For<ISynentraClient>();
-        services.AddSingleton(logger);
-        services.AddSingleton(client);
-        var provider = services.BuildServiceProvider();
-
-        var command = ProxyCommand.Create(provider);
-        await command.Parse([
-            "--method", "POST",
-            "--path", "/health",
-            "--body", "{}",
-            "--header", "Authorization:Bearer token",
-            "--header", "InvalidHeader",
-            "--header", "X-Test:123"
-        ]).InvokeAsync();
-
-        logger.Received().Write(Arg.Any<string>());
-    }
-
-    [Fact]
-    public async Task ProxyCommand_WhitespacePath_WritesError()
-    {
-        var services = new ServiceCollection();
-        var logger = Substitute.For<ISynentraCtlLogger>();
-        var client = Substitute.For<ISynentraClient>();
-        services.AddSingleton(logger);
-        services.AddSingleton(client);
-        var provider = services.BuildServiceProvider();
-
-        var command = ProxyCommand.Create(provider);
-        await command.Parse([
-            "--path", " ",
-            "--body", "{}",
-            "--header", "A:1"
-        ]).InvokeAsync();
-
-        logger.Received().WriteError(Arg.Any<string>());
     }
 }
