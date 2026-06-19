@@ -1252,4 +1252,166 @@ public class CommandActionTests
 
         provider.GetRequiredService<ISynentraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("not found")));
     }
+
+    [Fact]
+    public async Task RunCommand_BinaryMode_MissingBinary_WritesError()
+    {
+        var settings = new AppSettings { DeploymentMode = DeploymentMode.Binary };
+
+        var provider = BuildProvider(s =>
+        {
+            var appSettings = Substitute.For<IAppSettingsService>();
+            appSettings.LoadAsync(Arg.Any<CancellationToken>()).Returns(settings);
+            s.AddSingleton(appSettings);
+
+            var loc = Substitute.For<ILocation>();
+            var binPath = Path.GetTempPath();
+            loc.DefaultSynentraBinaryDirectoryName.Returns(binPath);
+            loc.LookupSynentraBinaryFilePath(Arg.Any<string>()).Returns(Path.Combine(binPath, "synentra-missing-binary"));
+            s.AddSingleton(loc);
+        });
+
+        var cmd = RunCommand.Create(provider);
+        await InvokeAsync(cmd, []);
+
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
+    }
+
+    [Fact]
+    public async Task RunCommand_BinaryMode_ExistingBinary_Foreground_StartsProcessAndStreamsOutput()
+    {
+        var settings = new AppSettings { DeploymentMode = DeploymentMode.Binary };
+
+        var provider = BuildProvider(s =>
+        {
+            var appSettings = Substitute.For<IAppSettingsService>();
+            appSettings.LoadAsync(Arg.Any<CancellationToken>()).Returns(settings);
+            s.AddSingleton(appSettings);
+
+            var loc = Substitute.For<ILocation>();
+            loc.DefaultSynentraBinaryDirectoryName.Returns(Path.GetTempPath());
+            loc.LookupSynentraBinaryFilePath(Arg.Any<string>()).Returns(@"C:\Windows\System32\whoami.exe");
+            s.AddSingleton(loc);
+
+            var gh = Substitute.For<IGitHubReleaseManager>();
+            gh.GetLatestVersion(Arg.Any<string>(), Arg.Any<string>()).Returns("v1.0.0");
+            s.AddSingleton(gh);
+        });
+
+        var cmd = RunCommand.Create(provider);
+        await InvokeAsync(cmd, []);
+
+        provider.GetRequiredService<ISynentraCtlLogger>().DidNotReceive().WriteError(Arg.Any<string>());
+    }
+
+    [Fact]
+    public async Task RunCommand_Docker_BackgroundFalse_TailsLogs()
+    {
+        var provider = BuildProvider(s =>
+        {
+            var docker = Substitute.For<IDockerService>();
+            docker.IsDockerAvailableAsync(Arg.Any<CancellationToken>()).Returns(true);
+            docker.GetDockerModeAsync(Arg.Any<CancellationToken>()).Returns("linux");
+            docker.ContainerExistsAsync(Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(true);
+            docker.IsContainerRunningAsync(Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(true);
+            s.AddSingleton(docker);
+
+            var settings = Substitute.For<IAppSettingsService>();
+            settings.LoadAsync(Arg.Any<CancellationToken>()).Returns(DefaultSettings());
+            s.AddSingleton(settings);
+
+            var loc = Substitute.For<ILocation>();
+            loc.DefaultSynentraDirectoryName.Returns(Path.GetTempPath());
+            s.AddSingleton(loc);
+        });
+
+        var cmd = RunCommand.Create(provider);
+        await InvokeAsync(cmd, ["--docker"]);
+
+        await provider.GetRequiredService<IDockerService>()
+            .Received().TailLogsAsync(Arg.Any<string>(), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task RunCommand_Docker_UnsupportedPlatform_WritesError()
+    {
+        var settingsWithNoTag = new AppSettings
+        {
+            Docker = new DockerSettings { ContainerName = "c", ImageName = "img", Tag = "" }
+        };
+
+        var provider = BuildProvider(s =>
+        {
+            var docker = Substitute.For<IDockerService>();
+            docker.IsDockerAvailableAsync(Arg.Any<CancellationToken>()).Returns(true);
+            docker.GetDockerModeAsync(Arg.Any<CancellationToken>()).Returns(string.Empty);
+            s.AddSingleton(docker);
+
+            var settings = Substitute.For<IAppSettingsService>();
+            settings.LoadAsync(Arg.Any<CancellationToken>()).Returns(settingsWithNoTag);
+            s.AddSingleton(settings);
+
+            var gh = Substitute.For<IGitHubReleaseManager>();
+            gh.GetLatestVersion(Arg.Any<string>(), Arg.Any<string>()).Returns("v1.2.3");
+            s.AddSingleton(gh);
+
+            var loc = Substitute.For<ILocation>();
+            loc.DefaultSynentraDirectoryName.Returns(Path.GetTempPath());
+            s.AddSingleton(loc);
+        });
+
+        var cmd = RunCommand.Create(provider);
+        await InvokeAsync(cmd, ["--docker", "--background"]);
+
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
+    }
+
+    [Fact]
+    public async Task InitCommand_BinarySuccess_ExtractsAndPersistsSettings()
+    {
+        var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+
+        try
+        {
+            var provider = BuildProvider(s =>
+            {
+                var loc = Substitute.For<ILocation>();
+                loc.DefaultSynentraBinaryDirectoryName.Returns(tempDir);
+                loc.LookupSynentraBinaryFilePath(Arg.Any<string>()).Returns(Path.Combine(tempDir, "synentra"));
+                s.AddSingleton(loc);
+
+                var gh = Substitute.For<IGitHubReleaseManager>();
+                gh.GetLatestVersion(Arg.Any<string>(), Arg.Any<string>()).Returns("v2.0.0");
+                gh.DownloadAsset(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>())
+                  .Returns(x => (string)x[3]);
+                gh.ValidateDownloadedAsset(Arg.Any<string>(), Arg.Any<string>()).Returns(true);
+                s.AddSingleton(gh);
+
+                var extractor = Substitute.For<IArchiveExtractor>();
+                extractor.When(x => x.ExtractArchive(Arg.Any<string>(), Arg.Any<string>()))
+                         .Do(ci =>
+                         {
+                             var extractDir = ci.ArgAt<string>(1);
+                             Directory.CreateDirectory(extractDir);
+                             File.WriteAllText(Path.Combine(extractDir, "synentra"), "binary");
+                         });
+                s.AddSingleton(extractor);
+
+                var appSettings = Substitute.For<IAppSettingsService>();
+                appSettings.LoadAsync(Arg.Any<CancellationToken>()).Returns(new AppSettings());
+                s.AddSingleton(appSettings);
+            });
+
+            var cmd = InitCommand.Create(provider);
+            await InvokeAsync(cmd, ["--version", "2.0.0"]);
+
+            await provider.GetRequiredService<IAppSettingsService>()
+                .Received().SaveAsync(Arg.Any<AppSettings>(), Arg.Any<CancellationToken>());
+            provider.GetRequiredService<ISynentraCtlLogger>().Received().Write(Arg.Is<string>(x => x.Contains("installed successfully")));
+        }
+        finally
+        {
+            if (Directory.Exists(tempDir)) Directory.Delete(tempDir, true);
+        }
+    }
 }
