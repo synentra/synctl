@@ -10,6 +10,7 @@ using Synentra.Client.Models.Policies;
 using Synentra.Client.Models.Tokens;
 using SynentraCtl.Commands;
 using SynentraCtl.Core.Services.Logger;
+using System.Text.Json.Nodes;
 
 namespace SynentraCtl.UnitTests.Commands;
 
@@ -493,6 +494,69 @@ public class ApiCommandActionTests
 
         var cmd = TokenCommand.Create(provider);
         await InvokeAsync(cmd, ["--agent-id", Guid.NewGuid().ToString(), "--secret", "bad-secret"]);
+
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
+    }
+
+    [Fact]
+    public async Task ProxyCommand_Create_InvokedWithHeaders_WritesResponse()
+    {
+        var provider = BuildProvider(s =>
+        {
+            var client = Substitute.For<ISynentraClient>();
+            var proxyClient = Substitute.For<ISynentraProxyClient>();
+
+            proxyClient.ExecuteAsync(
+                Arg.Any<string>(), 
+                Arg.Any<string>(), 
+                Arg.Any<JsonNode>(), 
+                Arg.Any<Dictionary<string, string>>(), 
+                Arg.Any<CancellationToken>())
+            .Returns(JsonNode.Parse("{\"status\":\"ok\"}"));
+
+            client.Proxy.Returns(proxyClient);
+            s.AddSingleton(client);
+        });
+
+        var cmd = ProxyCommand.Create(provider);
+        await InvokeAsync(cmd, [
+            "--method", "POST",
+            "--path", "/health",
+            "--body", "{}",
+            "--header", "Authorization:Bearer token",
+            "--header", "InvalidHeader",
+            "--header", "X-Test:123"
+            ]);
+
+        provider.GetRequiredService<ISynentraCtlLogger>().Received().Write(Arg.Is<string>(s => s.Contains("status")));
+    }
+
+    [Fact]
+    public async Task ProxyCommand_WhitespacePath_WritesError()
+    {
+        var provider = BuildProvider(s =>
+        {
+            var client = Substitute.For<ISynentraClient>();
+            var proxyClient = Substitute.For<ISynentraProxyClient>();
+
+            proxyClient.ExecuteAsync(
+                Arg.Any<string>(),
+                Arg.Any<string>(),
+                Arg.Any<JsonNode>(),
+                Arg.Any<Dictionary<string, string>>(),
+                Arg.Any<CancellationToken>())
+            .Throws(new Exception("server error"));
+
+            client.Proxy.Returns(proxyClient);
+            s.AddSingleton(client);
+        });
+
+        var cmd = ProxyCommand.Create(provider);
+        await InvokeAsync(cmd, [
+            "--path", " ",
+            "--body", "{}",
+            "--header", "A:1"
+            ]);
 
         provider.GetRequiredService<ISynentraCtlLogger>().Received().WriteError(Arg.Any<string>());
     }
