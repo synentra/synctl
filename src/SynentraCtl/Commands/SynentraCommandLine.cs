@@ -12,6 +12,7 @@ internal static class SynentraCommandLine
         rootCommand.Subcommands.Add(HitlCommand.Create(serviceProvider));
         rootCommand.Subcommands.Add(InitCommand.Create(serviceProvider));
         rootCommand.Subcommands.Add(PoliciesCommand.Create(serviceProvider));
+        rootCommand.Subcommands.Add(ProxyCommand.Create(serviceProvider));
         rootCommand.Subcommands.Add(RunCommand.Create(serviceProvider));
         rootCommand.Subcommands.Add(StopCommand.Create(serviceProvider));
         rootCommand.Subcommands.Add(TokenCommand.Create(serviceProvider));
