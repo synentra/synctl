@@ -11,28 +11,26 @@ internal static class ProxyCommand
 {
     public static Command Create(IServiceProvider serviceProvider)
     {
-        var methodOption = new Option<string>("--method")
-        {
-            Description = "HTTP method",
-            DefaultValueFactory = (result) => "GET"
-        };
-
         var urlOption = new Option<string>("--path")
         {
             Description = "Request path (appended to gateway base URL)",
             Required = true
         };
 
+        var methodOption = new Option<string>("--method")
+        {
+            Description = "HTTP method",
+            DefaultValueFactory = (result) => "GET"
+        };
+
         var bodyOption = new Option<string>("--body")
         {
-            Description = "Request body (raw string)",
-            Required = true
+            Description = "Request body (raw string)"
         };
 
         var headerOption = new Option<string[]?>("--header")
         {
-            Description = "Request headers in format Key:Value",
-            Required = true
+            Description = "Request headers in format Key:Value"
         };
 
         var command = new Command("proxy", "Forwards an HTTP request to the Synentra gateway")
